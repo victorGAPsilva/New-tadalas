@@ -1,6 +1,7 @@
 import { priceLine } from './order-model.js';
 import { productOptions, selectedPrice } from './product-options.js';
 import { initCheckout } from './checkout.js';
+import { animateElement, pulse, revealElements } from './motion.js';
 import { closeMenu } from './navigation.js';
 import { request } from './api.js';
 import {
@@ -11,7 +12,7 @@ import {
   formatPrice,
   restoreCart,
 } from './cart.js';
-import { renderMenu } from './menu.js?v=2.0.0';
+import { renderMenu } from './menu.js?v=3.0.0';
 import { el, productImage } from './components/dom.js';
 const $ = (selector) => document.querySelector(selector);
 let products = [],
@@ -21,19 +22,49 @@ let products = [],
   toastTimer,
   cartKey = 'tadalas-cart-v1';
 let readSelection = () => ({});
+let previousCount = 0;
+revealElements([...document.querySelectorAll('.menu-intro, .menu-steps')]);
 const checkout = initCheckout({
   getItems: () => items,
   getConfig: () => config,
   toast,
 });
+const closingDialogs = new WeakSet();
+function closeDialog(dialog) {
+  if (!dialog.open || closingDialogs.has(dialog)) return;
+  closingDialogs.add(dialog);
+  const animation = animateElement(
+    dialog,
+    [
+      { opacity: 1, transform: 'translate(0, 0)' },
+      {
+        opacity: 0,
+        transform:
+          dialog.id === 'cart-dialog' ? 'translateX(32px)' : 'translateY(12px)',
+      },
+    ],
+    { duration: 150, easing: 'ease-in' },
+  );
+  const finish = () => {
+    closingDialogs.delete(dialog);
+    if (dialog.open) dialog.close();
+  };
+  if (!animation) return finish();
+  animation.addEventListener('finish', finish, { once: true });
+  animation.addEventListener('cancel', finish, { once: true });
+}
 document
   .querySelectorAll('[data-close]')
   .forEach((button) =>
     button.addEventListener('click', () =>
-      document.getElementById(button.dataset.close).close(),
+      closeDialog(document.getElementById(button.dataset.close)),
     ),
   );
-document.querySelectorAll('dialog').forEach((dialog) =>
+document.querySelectorAll('dialog').forEach((dialog) => {
+  dialog.addEventListener('cancel', (event) => {
+    event.preventDefault();
+    closeDialog(dialog);
+  });
   dialog.addEventListener('click', (event) => {
     if (event.target === dialog) {
       const r = dialog.getBoundingClientRect();
@@ -43,10 +74,10 @@ document.querySelectorAll('dialog').forEach((dialog) =>
         event.clientY < r.top ||
         event.clientY > r.bottom
       )
-        dialog.close();
+        closeDialog(dialog);
     }
-  }),
-);
+  });
+});
 $('#year').textContent = new Date().getFullYear();
 function toast(message) {
   clearTimeout(toastTimer);
@@ -69,6 +100,8 @@ function save(render = true) {
 function updateTotals() {
   const count = items.reduce((sum, item) => sum + item.quantity, 0);
   $('#cart-count').textContent = count;
+  if (count !== previousCount) pulse($('#cart-count'));
+  previousCount = count;
   $('#open-cart').setAttribute(
     'aria-label',
     `Abrir carrinho, ${count} ${count === 1 ? 'item' : 'itens'}`,
@@ -96,7 +129,7 @@ function renderCart() {
     );
     const browse = el('a', 'Explorar cardápio ↗', 'button');
     browse.href = '#cardapio';
-    browse.addEventListener('click', () => $('#cart-dialog').close());
+    browse.addEventListener('click', () => closeDialog($('#cart-dialog')));
     empty.append(browse);
     list.append(empty);
   }
@@ -106,6 +139,23 @@ function renderCart() {
     const key = item.key || item.id;
     const priced = priceLine(product, item);
     const row = el('div', undefined, 'cart-item');
+    const photo = el('div', undefined, 'cart-item-photo');
+    const image = el('img');
+    image.src = product.image || '/assets/images/tadalas-logo.png';
+    image.alt = '';
+    image.width = image.height = 72;
+    image.loading = 'lazy';
+    image.classList.toggle('is-logo', !product.image);
+    image.addEventListener(
+      'error',
+      () => {
+        image.classList.add('is-logo');
+        image.src = '/assets/images/tadalas-logo.png';
+      },
+      { once: true },
+    );
+    photo.append(image);
+    const copy = el('div', undefined, 'cart-item-copy');
     const controls = el('div', undefined, 'item-controls');
     const label = el('label', 'Quantidade');
     label.htmlFor = `quantity-${crypto.randomUUID()}`;
@@ -118,6 +168,7 @@ function renderCart() {
     quantity.required = true;
     quantity.value = item.quantity;
     const amount = el('span', formatPrice(priced.priceCents * item.quantity));
+    amount.className = 'cart-line-total';
     const minus = el('button', '−', 'quantity-step');
     const plus = el('button', '+', 'quantity-step');
     minus.type = plus.type = 'button';
@@ -129,6 +180,7 @@ function renderCart() {
         quantity.value = value;
         quantity.removeAttribute('aria-invalid');
         amount.textContent = formatPrice(priced.priceCents * value);
+        pulse(amount);
         minus.disabled = value <= 1;
         plus.disabled = value >= 99;
         save(false);
@@ -163,7 +215,7 @@ function renderCart() {
       ($('#cart-items input') || $('#cart-dialog [data-close]')).focus();
     });
     controls.append(label, minus, quantity, plus, remove);
-    row.append(
+    copy.append(
       el('strong', product.name),
       el('p', priced.optionsDescription.join(' · '), 'cart-unit-price'),
       el(
@@ -174,6 +226,7 @@ function renderCart() {
       amount,
       controls,
     );
+    row.append(photo, copy);
     list.append(row);
   }
   $('#cart-total').textContent = formatPrice(subtotal(items, products));
@@ -189,7 +242,8 @@ $('#cart-bar').addEventListener('click', openCart);
 function addToCart(product, quantity = 1, selection = {}) {
   items = addItem(items, product, quantity, selection);
   save();
-  toast('Adicionado ao carrinho.');
+  pulse($('#cart-bar-total'));
+  toast(`${product.name} adicionado ao carrinho.`);
 }
 function quickAdd(product) {
   if (product.optionGroups?.length) {
@@ -198,6 +252,7 @@ function quickAdd(product) {
   }
   try {
     addToCart(product);
+    return true;
   } catch (error) {
     toast(error.message);
   }
@@ -234,13 +289,14 @@ function selectProduct(product) {
 }
 $('#add-form').addEventListener('submit', (event) => {
   event.preventDefault();
+  if (closingDialogs.has($('#product-dialog'))) return;
   try {
     addToCart(
       selectedProduct,
       Number($('#product-quantity').value),
       readSelection(),
     );
-    $('#product-dialog').close();
+    closeDialog($('#product-dialog'));
   } catch (error) {
     $('.option-error').textContent = error.message;
   }
