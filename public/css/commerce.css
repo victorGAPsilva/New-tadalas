@@ -1,0 +1,241 @@
+.store-status {
+  margin: 12px 0 24px;
+  color: #b5edbc;
+  font-size: 0.8rem;
+}
+.store-closed {
+  color: #ffb081;
+}
+.option-group {
+  border: 1px solid var(--color-border);
+  padding: 16px;
+  margin: 20px 0;
+  border-radius: var(--radius-sm);
+}
+.option-group legend {
+  padding: 0 6px;
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+.option-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  min-height: 44px;
+  padding: 10px 0;
+  font-size: 0.8rem;
+}
+.option-row input {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+  accent-color: var(--color-primary);
+  padding: 0;
+}
+.option-error {
+  color: #ffb081 !important;
+  font-size: 0.8rem;
+}
+.checkout-details {
+  border-block: 1px solid var(--color-border);
+  padding-block: 24px;
+  margin-top: 20px;
+}
+.checkout-details label {
+  display: block;
+  font-size: 0.8rem;
+  margin: 16px 0 8px;
+}
+.checkout-details input,
+.checkout-details select {
+  width: 100%;
+  min-height: 48px;
+  border: 1px solid #555;
+  background: var(--color-background);
+  color: var(--color-text);
+  padding: 12px;
+  border-radius: var(--radius-sm);
+}
+.checkout-details .cart-disclaimer {
+  margin: 14px 0 0;
+}
+.option-editor-group {
+  border: 1px solid #555;
+  border-radius: var(--radius-sm);
+  padding: 18px;
+  margin: 18px 0;
+}
+.option-editor-row {
+  display: grid;
+  grid-template-columns: 2fr 1fr auto;
+  gap: 10px;
+  align-items: end;
+  margin-top: 12px;
+}
+.option-editor-row label {
+  font-size: 0.7rem;
+}
+.option-editor-group .checks {
+  margin-top: 12px;
+}
+.admin-tabs {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-block: 28px;
+}
+.admin-tabs button[aria-pressed='true'] {
+  background: var(--color-primary);
+  color: #111;
+  border-color: var(--color-primary);
+}
+.ops-panel {
+  border-top: 1px solid var(--color-border);
+  padding-top: 28px;
+}
+.ops-card {
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+  border-radius: var(--radius-md);
+  padding: 24px;
+  margin: 18px 0;
+}
+.ops-card h3 {
+  font-size: 1.5rem;
+  margin-bottom: 12px;
+}
+.ops-card p {
+  font-size: 0.82rem;
+  margin-block: 8px;
+  overflow-wrap: anywhere;
+}
+.ops-card ul {
+  padding-left: 20px;
+  font-size: 0.8rem;
+}
+.ops-card select {
+  margin: 14px 0;
+  max-width: 320px;
+}
+.ops-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+.ops-grid .full {
+  grid-column: 1/-1;
+}
+.ops-grid label {
+  margin-top: 12px;
+}
+.ops-checkbox {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  min-height: 44px;
+  font-size: 0.8rem;
+}
+.ops-checkbox input {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--color-primary);
+}
+.ops-row {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-top: 14px;
+}
+.ops-row input,
+.ops-row select {
+  flex: 1;
+  min-width: 100px;
+}
+.ops-panel h2 {
+  font-size: 2rem;
+  margin-bottom: 20px;
+}
+.account-history {
+  margin-top: 40px;
+}
+.account-history h2 {
+  font-size: 2rem;
+  margin-bottom: 20px;
+}
+.account-history input,
+.account-history select {
+  background: #0b0b0b;
+  color: var(--color-text);
+  border: 1px solid #555;
+  padding: 12px;
+  min-height: 44px;
+  width: 100%;
+  border-radius: var(--radius-sm);
+}
+.account-history label {
+  display: block;
+  margin-top: 12px;
+  font-size: 0.75rem;
+}
+.account-history .ops-card .button {
+  margin-top: 16px;
+}
+.account-history .logout-button {
+  font-size: 0.75rem;
+}
+.email-status {
+  font-size: 0.8rem;
+  color: var(--color-text-muted);
+  margin-block: 20px;
+}
+.recovery-message {
+  white-space: pre-line;
+  margin-block: 20px;
+  font-size: 0.85rem;
+}
+.recovery-card {
+  max-width: 500px;
+  margin: 64px auto;
+  padding: 28px;
+  background: var(--color-surface);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-border);
+}
+.recovery-card h1 {
+  font-size: 2.5rem;
+  margin-block: 18px;
+}
+.recovery-card input {
+  display: block;
+  width: 100%;
+  padding: 14px;
+  border: 1px solid #555;
+  background: #0b0b0b;
+  color: var(--color-text);
+  margin-block: 8px 20px;
+  border-radius: var(--radius-sm);
+}
+@media (max-width: 600px) {
+  .ops-grid {
+    grid-template-columns: 1fr;
+  }
+  .option-editor-row {
+    grid-template-columns: 1fr;
+  }
+  .ops-card {
+    padding: 18px;
+  }
+  .ops-row {
+    align-items: stretch;
+  }
+  .admin-tabs button {
+    flex: 1;
+  }
+  .recovery-card {
+    margin: 32px 16px;
+  }
+  .cart-dialog {
+    padding-bottom: 40px;
+  }
+}

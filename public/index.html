@@ -1,0 +1,315 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#0B0B0B" />
+    <title>TADALAS BURGUER — Não é só um hambúrguer. É Tadalas.</title>
+    <meta
+      name="description"
+      content="Atitude, personalidade e muito sabor. Conheça a TADALAS BURGUER, explore o cardápio e fale com a gente pelo WhatsApp."
+    />
+    <meta property="og:title" content="TADALAS BURGUER" />
+    <meta
+      property="og:description"
+      content="NÃO É SÓ UM HAMBÚRGUER. É TADALAS."
+    />
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="pt_BR" />
+    <link rel="icon" type="image/png" href="/assets/images/tadalas-logo.png" />
+    <link
+      rel="preload"
+      href="/assets/fonts/anton.ttf"
+      as="font"
+      type="font/ttf"
+      crossorigin
+    />
+    <link rel="stylesheet" href="/css/reset.css" />
+    <link rel="stylesheet" href="/css/tokens.css" />
+    <link rel="stylesheet" href="/css/global.css" />
+    <link rel="stylesheet" href="/css/components.css?v=1.2.0" />
+    <link rel="stylesheet" href="/css/responsive.css" />
+    <link rel="stylesheet" href="/css/home.css?v=4.0.0" />
+    <script type="module" src="/js/home.js?v=4.1.0"></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#conteudo">Pular para o conteúdo</a>
+    <div id="demo-banner" class="demo-banner" hidden>
+      DEMONSTRAÇÃO LOCAL · Produtos fictícios, sem venda ou envio de pedidos.
+    </div>
+    <header class="header">
+      <div class="container header-inner">
+        <a class="brand" href="#inicio" aria-label="Tadalas Burguer — início"
+          ><img
+            src="/assets/images/tadalas-logo.png"
+            alt="TADALAS BURGUER"
+            width="96"
+            height="96"
+        /></a>
+        <button
+          class="menu-toggle"
+          id="menu-toggle"
+          aria-expanded="false"
+          aria-controls="navigation"
+        >
+          Menu <span aria-hidden="true">☰</span>
+        </button>
+        <nav id="navigation" aria-label="Navegação principal">
+          <a href="#inicio">Início</a><a href="/cardapio/">Cardápio</a
+          ><a href="#sobre">Sobre</a><a href="#contato">Contato</a
+          ><a href="/login/" data-customer-link>Entrar</a
+          ><a class="button button-small" href="/cardapio/"
+            >Ver cardápio <span aria-hidden="true">↗</span></a
+          >
+        </nav>
+        <a class="cart-toggle" href="/cardapio/">Fazer pedido ↗</a>
+      </div>
+    </header>
+    <main id="conteudo">
+      <section class="hero container" id="inicio" aria-labelledby="hero-title">
+        <div class="hero-copy">
+          <p class="eyebrow">
+            <span class="orange-line"></span> Tadalas Burguer / Feita de atitude
+          </p>
+          <h1 id="hero-title">
+            NÃO É SÓ UM<br />HAMBÚRGUER.<br /><em>É TADALAS.</em>
+          </h1>
+          <p class="hero-description">
+            Atitude, personalidade e muito sabor em uma experiência que foge do
+            comum.
+          </p>
+          <div class="hero-actions">
+            <p
+              id="home-store-status"
+              class="home-store-status"
+              role="status"
+            ></p>
+            <a href="/cardapio/" class="button"
+              >Explorar cardápio <span aria-hidden="true">↗</span></a
+            ><a href="#sobre" class="text-link"
+              >Conheça a Tadalas <span aria-hidden="true">↓</span></a
+            >
+          </div>
+          <div class="hero-footnote">
+            <span aria-hidden="true">01 /</span> PERSONALIDADE ATÉ A ÚLTIMA
+            MORDIDA.
+          </div>
+        </div>
+        <div
+          class="hero-art hero-carousel"
+          id="hero-art"
+          role="region"
+          aria-roledescription="carrossel"
+          aria-label="Hambúrgueres e combos em destaque"
+        >
+          <div class="carousel-top">
+            <span>TADALAS / NO SEU RITMO.</span
+            ><span id="carousel-position">01 / 02</span>
+          </div>
+          <div
+            id="carousel-slide"
+            class="carousel-viewport"
+            role="group"
+            aria-roledescription="slide"
+            aria-label="1 de 2"
+          >
+            <img
+              id="carousel-image"
+              src="/assets/images/carousel-burguer-illustrative.jpg"
+              alt="Hambúrguer — imagem ilustrativa"
+              width="960"
+              height="960"
+              fetchpriority="high"
+            /><span id="carousel-illustrative" class="carousel-illustrative"
+              >IMAGEM ILUSTRATIVA</span
+            >
+          </div>
+          <div class="carousel-caption">
+            <div>
+              <p id="carousel-category">PRA SUA FOME</p>
+              <h2 id="carousel-title">HAMBÚRGUERES.</h2>
+              <a id="carousel-link" class="text-link" href="/cardapio/"
+                >Ver no cardápio <span aria-hidden="true">↗</span></a
+              >
+            </div>
+            <div class="carousel-controls">
+              <button
+                id="carousel-prev"
+                type="button"
+                aria-label="Slide anterior"
+                hidden
+              >
+                ←</button
+              ><button
+                id="carousel-next"
+                type="button"
+                aria-label="Próximo slide"
+                hidden
+              >
+                →
+              </button>
+            </div>
+          </div>
+          <div class="carousel-bottom">
+            <div
+              id="carousel-dots"
+              class="carousel-dots"
+              role="group"
+              aria-label="Selecionar slide"
+              hidden
+            ></div>
+            <button
+              id="carousel-pause"
+              type="button"
+              aria-label="Pausar carrossel"
+              aria-pressed="false"
+              hidden
+            >
+              Ⅱ
+            </button>
+          </div>
+          <p
+            id="carousel-status"
+            class="carousel-sr-only"
+            role="status"
+            aria-live="polite"
+          ></p>
+        </div>
+      </section>
+      <div class="brand-strip" aria-hidden="true">
+        <div class="container">
+          <span>SABOR COM PERSONALIDADE</span><span>✳</span
+          ><span>ZERO VONTADE DE SER IGUAL</span><span>✳</span
+          ><span>ISSO É TADALAS</span>
+        </div>
+      </div>
+      <section
+        class="identity container reveal"
+        aria-labelledby="identity-title"
+      >
+        <p class="eyebrow section-index">01 / NOSSA ESSÊNCIA</p>
+        <div>
+          <h2 id="identity-title">
+            MAIS QUE UM BURGUER.<br /><span class="muted">UMA IDENTIDADE.</span>
+          </h2>
+          <p class="section-description">
+            A gente acredita que sabor também é expressão. Uma marca urbana,
+            cheia de energia e com personalidade em cada detalhe.
+          </p>
+        </div>
+      </section>
+      <section
+        class="menu-teaser container reveal"
+        id="cardapio"
+        aria-labelledby="teaser-title"
+      >
+        <div>
+          <p class="eyebrow">02 / O PRÓXIMO PASSO É UMA BOA MORDIDA</p>
+          <h2 id="teaser-title">A FOME<br /><em>TEM NOME.</em></h2>
+          <p>
+            Nosso cardápio tem um lugar só dele. Escolha seus favoritos, monte o
+            carrinho e continue o pedido pelo WhatsApp.
+          </p>
+          <a class="button" href="/cardapio/"
+            >Explorar cardápio <span aria-hidden="true">↗</span></a
+          >
+        </div>
+        <a class="teaser-mark" href="/cardapio/" aria-label="Abrir cardápio"
+          ><img
+            src="/assets/images/tadalas-logo.png"
+            alt="TADALAS BURGUER"
+            width="360"
+            height="360"
+            loading="lazy"
+        /></a>
+      </section>
+      <section
+        class="about-section reveal"
+        id="sobre"
+        aria-labelledby="about-title"
+      >
+        <div class="container about-grid">
+          <div class="about-poster" aria-hidden="true">
+            <span>ORIGINAL POR NATUREZA.</span>
+            <div>COM<br /><em>ATITUDE.</em><br />SEMPRE.</div>
+            <span>TADALAS BURGUER / É SOBRE PERSONALIDADE.</span>
+          </div>
+          <div class="about-copy">
+            <p class="eyebrow">03 / PRAZER, TADALAS</p>
+            <h2 id="about-title">QUEM É<br />A TADALAS?</h2>
+            <p class="lead">
+              Uma proposta: transformar o hambúrguer em uma experiência cheia de
+              atitude e personalidade.
+            </p>
+            <p>
+              Urbana no jeito. Autêntica na expressão. A TADALAS BURGUER é um
+              convite para sair do comum e viver o sabor do seu jeito.
+            </p>
+            <a href="#contato" class="text-link"
+              >Chega mais <span aria-hidden="true">↗</span></a
+            >
+          </div>
+        </div>
+      </section>
+      <section
+        class="contact container reveal"
+        id="contato"
+        aria-labelledby="contact-title"
+      >
+        <div>
+          <p class="eyebrow">04 / A CONVERSA COMEÇA AQUI</p>
+          <h2 id="contact-title">
+            BATEU A FOME?<br /><em>CHAMA A TADALAS.</em>
+          </h2>
+        </div>
+        <div class="contact-details">
+          <a
+            class="button whatsapp-link"
+            href="https://wa.me/5511960217697"
+            target="_blank"
+            rel="noopener noreferrer"
+            >Falar no WhatsApp <span aria-hidden="true">↗</span></a
+          >
+          <p id="contact-number">+55 11 96021-7697</p>
+          <p class="muted">
+            Consulte disponibilidade, valores e condições de entrega com o
+            atendimento.
+          </p>
+          <div id="business-details"></div>
+        </div>
+      </section>
+    </main>
+    <footer class="footer">
+      <div class="container">
+        <div class="footer-top">
+          <a class="brand" href="#inicio"
+            ><img
+              src="/assets/images/tadalas-logo.png"
+              alt="TADALAS BURGUER"
+              width="120"
+              height="120"
+              loading="lazy"
+          /></a>
+          <p>NÃO É SÓ UM HAMBÚRGUER.<br /><span>É TADALAS.</span></p>
+          <nav aria-label="Links do rodapé">
+            <a href="/cardapio/">Cardápio</a><a href="#sobre">Sobre</a
+            ><a href="#contato">Contato</a
+            ><a href="/login/" data-customer-link>Entrar</a>
+          </nav>
+        </div>
+        <div class="footer-bottom">
+          <span
+            >© <span id="year">2026</span> TADALAS BURGUER. Todos os direitos
+            reservados.</span
+          ><span>ATITUDE. PERSONALIDADE. SABOR.</span>
+        </div>
+      </div>
+    </footer>
+    <noscript
+      ><p class="noscript">
+        Ative o JavaScript para explorar o cardápio e montar seu pedido. Você
+        também pode falar pelo WhatsApp nos links acima.
+      </p></noscript
+    >
+  </body>
+</html>

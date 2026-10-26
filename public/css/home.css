@@ -1,0 +1,225 @@
+.menu-teaser {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  gap: 48px;
+  align-items: center;
+  border-top: 1px solid var(--color-border);
+  padding-block: 72px;
+}
+.home-store-status {
+  color: #b5edbc;
+  flex-basis: 100%;
+  font-size: 0.75rem;
+}
+.home-store-status.store-closed {
+  color: #ffb081;
+}
+.hero-art.hero-carousel {
+  padding: 0;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  min-height: 530px;
+}
+.carousel-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 18px 24px;
+  font-size: 0.55rem;
+  letter-spacing: 0.1em;
+  background: #151515;
+}
+.carousel-top > span:last-child {
+  color: var(--color-primary);
+  font-variant-numeric: tabular-nums;
+}
+.carousel-viewport {
+  position: relative;
+  aspect-ratio: 1.2;
+  min-height: 0;
+  overflow: hidden;
+  touch-action: pan-y;
+  background: #191714;
+}
+.hero-carousel .carousel-viewport img {
+  position: static;
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  user-select: none;
+  pointer-events: none;
+}
+.carousel-illustrative {
+  position: absolute;
+  right: 14px;
+  bottom: 14px;
+  color: #fff;
+  background: #0b0b0bdb;
+  padding: 6px 9px;
+  border-radius: 3px;
+  font-size: 0.5rem;
+  letter-spacing: 0.1em;
+}
+.carousel-caption {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 24px 24px 0;
+}
+.carousel-caption > div:first-child {
+  min-width: 0;
+}
+.carousel-caption p {
+  font-size: 0.55rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  color: var(--color-primary);
+}
+.carousel-caption h2 {
+  font-size: clamp(1.7rem, 2.7vw, 2.4rem);
+  line-height: 1.12;
+  margin-top: 10px;
+  overflow-wrap: anywhere;
+}
+.carousel-caption .text-link {
+  font-size: 0.7rem;
+  margin-top: 8px;
+}
+.carousel-controls {
+  display: flex;
+  gap: 8px;
+  flex-shrink: 0;
+  padding-bottom: 8px;
+}
+.carousel-controls button,
+#carousel-pause {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border: 1px solid #555;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--color-text);
+  font-size: 1.2rem;
+}
+.carousel-controls button:hover,
+#carousel-pause:hover {
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+  color: #111;
+}
+.carousel-bottom {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 8px 24px 16px;
+}
+.carousel-dots {
+  display: flex;
+  gap: 0;
+  flex-wrap: wrap;
+}
+.carousel-dot {
+  position: relative;
+  width: 30px;
+  height: 44px;
+  border: 0;
+  background: none;
+  padding: 0;
+}
+.carousel-dot::after {
+  content: '';
+  display: block;
+  width: 14px;
+  height: 3px;
+  background: #777;
+  border-radius: 3px;
+  margin: auto;
+  transition:
+    background 0.2s,
+    width 0.2s;
+}
+.carousel-dot[aria-current='true']::after {
+  background: var(--color-primary);
+  width: 24px;
+}
+.carousel-sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+@media (max-width: 767px) {
+  .hero-art.hero-carousel {
+    min-height: 0;
+  }
+  .carousel-viewport {
+    aspect-ratio: 1.2;
+  }
+  .carousel-caption {
+    padding: 22px 20px 0;
+  }
+  .carousel-caption h2 {
+    font-size: 1.75rem;
+  }
+  .carousel-bottom {
+    padding-inline: 20px;
+  }
+  .carousel-top {
+    padding-inline: 20px;
+  }
+  .carousel-controls {
+    gap: 6px;
+  }
+  .carousel-controls button {
+    width: 44px;
+    height: 44px;
+  }
+}
+.menu-teaser h2 {
+  font-size: clamp(3.5rem, 7vw, 6rem);
+  line-height: 0.95;
+  margin-top: 24px;
+}
+.menu-teaser p:not(.eyebrow) {
+  color: var(--color-text-muted);
+  max-width: 420px;
+  margin-block: 24px;
+  font-size: 0.9rem;
+}
+.teaser-mark {
+  display: grid;
+  place-items: center;
+  background: var(--color-surface);
+  padding: 32px;
+  border-radius: var(--radius-md);
+}
+.teaser-mark img {
+  object-fit: contain;
+  width: min(100%, 320px);
+  height: auto;
+}
+@media (max-width: 767px) {
+  .menu-teaser {
+    grid-template-columns: 1fr;
+    gap: 32px;
+    padding-block: 48px;
+  }
+  .teaser-mark {
+    padding: 24px;
+  }
+  .teaser-mark img {
+    width: min(70%, 240px);
+  }
+}
