@@ -70,6 +70,12 @@ export function adminRouter({
   router.get('/settings', (_req, res) =>
     res.json({ data: { ...settings.get(), emailStatus: mail.status() } }),
   );
+  router.get('/settings/operation', (_req, res) =>
+    res.json({ data: settings.operation() }),
+  );
+  router.patch('/settings/operation', (req, res) =>
+    res.json({ data: settings.updateOperation(req.body) }),
+  );
   router.put('/settings', (req, res) =>
     res.json({ data: settings.update(req.body) }),
   );

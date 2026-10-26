@@ -233,6 +233,112 @@ test('horários usam fuso da loja e intervalos após meia-noite', () => {
     false,
   );
 });
+
+test('controle administrativo abre e fecha imediatamente e ativa horários sem alterar outras configurações', () =>
+  harness(async ({ admin, client, orderInput, advance, app }) => {
+    const guest = client();
+    assert.equal(
+      (await guest.send('/api/admin/settings/operation')).status,
+      401,
+    );
+    let state = (await admin.send('/api/admin/settings/operation')).data;
+    const original = (await admin.send('/api/admin/settings')).data;
+    assert.equal(
+      (
+        await admin.send(
+          '/api/admin/settings/operation',
+          'PATCH',
+          {
+            version: state.version,
+            storeMode: 'manual',
+            manualOpen: false,
+          },
+          { 'X-CSRF-Token': 'invalid' },
+        )
+      ).status,
+      403,
+    );
+    const closed = await admin.send('/api/admin/settings/operation', 'PATCH', {
+      version: state.version,
+      storeMode: 'manual',
+      manualOpen: false,
+      brand: 'Não deve sobrescrever a marca',
+    });
+    assert.equal(closed.status, 200);
+    assert.equal(closed.data.status.open, false);
+    assert.equal(
+      (await guest.send('/api/orders/quote', 'POST', orderInput())).status,
+      409,
+    );
+    assert.equal(
+      (await admin.send('/api/admin/settings')).data.brand,
+      original.brand,
+    );
+    assert.equal(
+      (
+        await admin.send('/api/admin/settings/operation', 'PATCH', {
+          version: state.version,
+          manualOpen: true,
+        })
+      ).status,
+      409,
+    );
+    state = closed.data;
+    assert.equal(
+      (
+        await admin.send('/api/admin/settings/operation', 'PATCH', {
+          version: state.version,
+          storeMode: 'schedule',
+          schedule: [],
+        })
+      ).status,
+      400,
+    );
+    assert.equal(
+      (
+        await admin.send('/api/admin/settings/operation', 'PATCH', {
+          version: state.version,
+          storeMode: 'schedule',
+          schedule: [{ day: 6, open: '20:00', close: '20:00' }],
+        })
+      ).status,
+      400,
+    );
+    const scheduled = await admin.send(
+      '/api/admin/settings/operation',
+      'PATCH',
+      {
+        version: state.version,
+        storeMode: 'schedule',
+        schedule: [{ day: 6, open: '18:00', close: '20:00' }],
+      },
+    );
+    assert.equal(scheduled.status, 200);
+    assert.equal(scheduled.data.status.open, true);
+    assert.equal(
+      (await guest.send('/api/orders/quote', 'POST', orderInput())).status,
+      200,
+    );
+    advance(60 * 60 * 1000);
+    state = (await admin.send('/api/admin/settings/operation')).data;
+    assert.equal(state.status.open, false); // Exatamente às 20h de São Paulo.
+    const opened = await admin.send('/api/admin/settings/operation', 'PATCH', {
+      version: state.version,
+      storeMode: 'manual',
+      manualOpen: true,
+    });
+    assert.equal(opened.status, 200);
+    assert.equal(opened.data.status.open, true);
+    assert.deepEqual(opened.data.schedule, scheduled.data.schedule);
+    assert.equal(
+      (await guest.send('/api/orders/quote', 'POST', orderInput())).status,
+      200,
+    );
+    assert.equal(
+      app.locals.services.store.get('settings', 'public').manualOpen,
+      true,
+    );
+  }));
 test('pedido persistente, idempotência, preço, taxa e evolução de status', () =>
   harness(async ({ admin, client, fixture, orderInput }) => {
     const guest = client();

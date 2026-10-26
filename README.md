@@ -34,6 +34,8 @@ Os comandos pedem usuário e senha oculta de 12–128 caracteres. A redefiniçã
 
 O painel tem quatro áreas:
 
+No topo do painel, **Atendimento da loja** mostra o estado atual e permite **Abrir loja agora** ou **Fechar loja agora**. A ação vale imediatamente para novos pedidos e ativa o modo manual, sem apagar os horários. Em **Definir horários de abertura e fechamento**, adicione intervalos por dia e use **Salvar e ativar horários** para voltar ao modo automático. Dias sem intervalo ficam fechados; fechamento antes da abertura corresponde ao dia seguinte, no fuso configurado. O estado se atualiza a cada 30 segundos com a página visível, sem apagar horários que estejam sendo editados. Alterações concorrentes exigem recarregar os horários salvos.
+
 - **Produtos:** criação, edição, exclusão com confirmação, busca, categoria, fotos, ingredientes, disponibilidade e destaque. Grupos de opções permitem adicionais pagos, escolhas obrigatórias de combo e limites mínimo/máximo. O cliente também pode retirar ingredientes. Não há controle de estoque ou baixa de unidades.
 - **Pedidos:** listagem e mudança de situação: aguardando confirmação → aceito → em preparo → saiu para entrega ou pronto para retirada → concluído. Cancelamento é permitido antes de concluir. O fluxo respeita o tipo de atendimento e rejeita alterações com versão antiga.
 - **Configurações:** marca, logo, WhatsApp, Instagram, endereço, prazo estimado, meios de pagamento, entrega/retirada, bairros/taxas, horário semanal e abertura/pausa manual. O painel informa se o envio de e-mail foi configurado.

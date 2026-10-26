@@ -37,7 +37,31 @@ export function settingsService(
   store,
   { whatsappNumber, now = Date.now } = {},
 ) {
+  const operation = () => {
+    const value = store.get('settings', 'public');
+    return {
+      version: value.version,
+      storeMode: value.storeMode,
+      manualOpen: value.manualOpen,
+      schedule: value.schedule,
+      timezone: value.timezone,
+      status: storeStatus(value, new Date(now())),
+    };
+  };
   return {
+    operation,
+    updateOperation(input) {
+      if (!input || typeof input !== 'object')
+        throw fail('Informe o funcionamento da loja.');
+      const previous = store.get('settings', 'public');
+      const changes = {};
+      for (const key of ['storeMode', 'manualOpen', 'schedule'])
+        if (Object.hasOwn(input, key)) changes[key] = input[key];
+      if (!Object.keys(changes).length)
+        throw fail('Informe a alteração de funcionamento.');
+      this.update({ ...previous, ...changes, version: input.version });
+      return operation();
+    },
     get: () => store.get('settings', 'public'),
     public() {
       const value = store.get('settings', 'public');
