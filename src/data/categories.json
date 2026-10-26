@@ -1,0 +1,6 @@
+[
+  { "id": "hamburgueres", "name": "Hambúrgueres" },
+  { "id": "combos", "name": "Combos" },
+  { "id": "acompanhamentos", "name": "Acompanhamentos" },
+  { "id": "bebidas", "name": "Bebidas" }
+]
