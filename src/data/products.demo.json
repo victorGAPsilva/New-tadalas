@@ -1,0 +1,24 @@
+[
+  {
+    "id": "exemplo-local",
+    "name": "Burguer de exemplo — demonstração",
+    "description": "Produto fictício para testar o fluxo local. Não disponível para venda.",
+    "priceCents": 2500,
+    "category": "hamburgueres",
+    "available": true,
+    "featured": true,
+    "ingredients": ["Ingrediente demonstrativo"],
+    "image": null
+  },
+  {
+    "id": "exemplo-indisponivel",
+    "name": "Exemplo indisponível",
+    "description": "Item fictício para testar indisponibilidade.",
+    "priceCents": 1500,
+    "category": "bebidas",
+    "available": false,
+    "featured": false,
+    "ingredients": [],
+    "image": null
+  }
+]
