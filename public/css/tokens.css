@@ -1,0 +1,28 @@
+@font-face {
+  font-family: Anton;
+  src: url(/assets/fonts/anton.ttf) format('truetype');
+  font-display: swap;
+  font-weight: 400;
+}
+:root {
+  --color-background: #0b0b0b;
+  --color-surface: #151515;
+  --color-surface-raised: #202020;
+  --color-primary: #ff6a00;
+  --color-primary-hover: #e65f00;
+  --color-text: #f7f4ee;
+  --color-text-muted: #a8a8a8;
+  --color-border: #303030;
+  --radius-sm: 6px;
+  --radius-md: 12px;
+  --radius-lg: 18px;
+  --container-width: 1200px;
+  --font-heading: Anton, Impact, 'Arial Narrow', sans-serif;
+  --font-body: Arial, Helvetica, sans-serif;
+  --space-1: 0.5rem;
+  --space-2: 1rem;
+  --space-3: 1.5rem;
+  --space-4: 2rem;
+  --space-5: 3rem;
+  --space-6: 5rem;
+}

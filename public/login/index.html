@@ -1,0 +1,205 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex,nofollow" />
+    <title>Minha conta — TADALAS BURGUER</title>
+    <link rel="icon" href="/assets/images/tadalas-logo.png" />
+    <link rel="stylesheet" href="/css/reset.css" />
+    <link rel="stylesheet" href="/css/tokens.css" />
+    <link rel="stylesheet" href="/css/global.css" />
+    <link rel="stylesheet" href="/css/account.css" />
+    <script type="module" src="/js/login.js?v=5.0.0"></script>
+    <link rel="stylesheet" href="/css/commerce.css" />
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Pular para o conteúdo</a>
+    <div class="account-page">
+      <header class="account-header">
+        <a href="/" aria-label="Tadalas Burguer — início"
+          ><img
+            src="/assets/images/tadalas-logo.png"
+            alt="TADALAS BURGUER"
+            width="88"
+            height="88"
+        /></a>
+        <nav aria-label="Navegação da conta">
+          <a href="/">Início</a><a href="/cardapio/">Cardápio e pedidos ↗</a>
+        </nav>
+      </header>
+      <main id="main">
+        <section
+          id="auth-view"
+          class="account-layout"
+          aria-labelledby="account-title"
+        >
+          <div class="account-intro">
+            <p class="eyebrow">CHEGA MAIS. A CASA É SUA.</p>
+            <h1 id="account-title">
+              SUA FOME.<br />SUA CONTA.<br /><em>É TADALAS.</em>
+            </h1>
+            <p>
+              Entre ou crie sua conta de cliente. Seu próximo pedido começa no
+              cardápio.
+            </p>
+            <a class="text-link" href="/cardapio/"
+              >Pedir sem entrar <span aria-hidden="true">↗</span></a
+            >
+          </div>
+          <div>
+            <div class="account-form-card">
+              <div
+                class="account-tabs"
+                role="group"
+                aria-label="Acesso de clientes"
+              >
+                <button id="show-login" type="button" aria-pressed="true">
+                  Entrar</button
+                ><button id="show-register" type="button" aria-pressed="false">
+                  Criar conta
+                </button>
+              </div>
+              <form id="customer-form">
+                <div id="name-field" hidden>
+                  <label for="customer-name">Seu nome</label
+                  ><input
+                    id="customer-name"
+                    autocomplete="name"
+                    maxlength="80"
+                  />
+                </div>
+                <label for="customer-email">E-mail</label
+                ><input
+                  id="customer-email"
+                  type="email"
+                  autocomplete="username"
+                  maxlength="100"
+                  required
+                /><label for="customer-password">Senha</label
+                ><input
+                  id="customer-password"
+                  type="password"
+                  autocomplete="current-password"
+                  maxlength="128"
+                  required
+                />
+                <div id="confirm-field" hidden>
+                  <label for="customer-confirm">Confirme a senha</label
+                  ><input
+                    id="customer-confirm"
+                    type="password"
+                    autocomplete="new-password"
+                    maxlength="128"
+                  />
+                </div>
+                <p id="account-error" class="account-error" role="alert"></p>
+                <button id="customer-submit" class="button" type="submit">
+                  Entrar <span aria-hidden="true">↗</span>
+                </button>
+                <p id="password-hint" class="account-hint" hidden>
+                  Use uma senha de 12 a 128 caracteres. Seu e-mail será usado
+                  para identificar a conta.
+                </p>
+              </form>
+            </div>
+            <a class="account-admin-link" href="/recuperar/"
+              >Esqueci minha senha ↗</a
+            ><a class="account-admin-link" href="/admin/login/"
+              >Administrar a hamburgueria ↗</a
+            >
+          </div>
+        </section>
+        <section
+          id="profile-view"
+          class="profile"
+          aria-labelledby="profile-title"
+          hidden
+        >
+          <p class="eyebrow">SUA CONTA TADALAS</p>
+          <h1 id="profile-title">OLÁ, <em id="profile-name"></em>.</h1>
+          <p class="muted">Tudo pronto para escolher seu próximo favorito.</p>
+          <div class="profile-card">
+            <dl>
+              <div>
+                <dt>Nome</dt>
+                <dd id="profile-full-name"></dd>
+              </div>
+              <div>
+                <dt>E-mail</dt>
+                <dd id="profile-email"></dd>
+              </div>
+            </dl>
+            <p class="account-error" id="profile-error" role="alert"></p>
+            <div class="profile-actions">
+              <a class="button" href="/cardapio/">Montar meu pedido ↗</a
+              ><button id="customer-logout" class="logout-button" type="button">
+                Sair da conta
+              </button>
+            </div>
+          </div>
+          <p class="account-hint">
+            A confirmação do pedido acontece no atendimento pelo WhatsApp.
+          </p>
+          <p id="email-status" class="email-status"></p>
+          <button
+            id="resend-verification"
+            class="logout-button"
+            type="button"
+            hidden
+          >
+            Reenviar confirmação de e-mail
+          </button>
+          <p id="profile-extra-error" class="account-error" role="alert"></p>
+          <section class="account-history" aria-labelledby="history-title">
+            <h2 id="history-title">MEUS PEDIDOS.</h2>
+            <button id="refresh-history" type="button" class="logout-button">
+              Atualizar pedidos
+            </button>
+            <div id="customer-orders"></div>
+          </section>
+          <section class="account-history" aria-labelledby="addresses-title">
+            <h2 id="addresses-title">MEUS ENDEREÇOS.</h2>
+            <div id="customer-addresses"></div>
+            <button id="new-address" class="logout-button" type="button">
+              Novo endereço
+            </button>
+            <form id="address-form" class="ops-card">
+              <h3 id="address-editor-title">NOVO ENDEREÇO</h3>
+              <label for="saved-label">Nome do endereço (ex.: Casa)</label
+              ><input id="saved-label" maxlength="150" required /><label
+                for="saved-street"
+                >Rua</label
+              ><input id="saved-street" maxlength="150" required /><label
+                for="saved-number"
+                >Número</label
+              ><input id="saved-number" maxlength="150" required /><label
+                for="saved-neighborhood"
+                >Bairro</label
+              ><input id="saved-neighborhood" maxlength="150" required /><label
+                for="saved-city"
+                >Cidade</label
+              ><input id="saved-city" maxlength="150" required /><label
+                for="saved-complement"
+                >Complemento (opcional)</label
+              ><input id="saved-complement" maxlength="150" /><label
+                for="saved-postalCode"
+                >CEP (opcional)</label
+              ><input id="saved-postalCode" maxlength="150" /><button
+                id="save-address"
+                class="button"
+                type="submit"
+              >
+                Salvar endereço
+              </button>
+            </form>
+          </section>
+        </section>
+      </main>
+      <noscript
+        >Ative o JavaScript para acessar sua conta. O cardápio continua
+        disponível pelo link acima.</noscript
+      >
+    </div>
+  </body>
+</html>

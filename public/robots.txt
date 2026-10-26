@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+Disallow: /admin/
+Disallow: /login/
+Disallow: /conta/
+Disallow: /recuperar/
+Disallow: /verificar-email/

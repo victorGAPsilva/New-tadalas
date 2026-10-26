@@ -1,0 +1,492 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex,nofollow" />
+    <meta name="theme-color" content="#0b0b0b" />
+    <title>Administração — TADALAS BURGUER</title>
+    <link rel="icon" href="/assets/images/tadalas-logo.png" type="image/png" />
+    <link rel="stylesheet" href="/css/reset.css" />
+    <link rel="stylesheet" href="/css/tokens.css" />
+    <link rel="stylesheet" href="/css/global.css" />
+    <link rel="stylesheet" href="/admin/admin.css" />
+    <script type="module" src="/admin/admin.js?v=5.0.0"></script>
+    <link rel="stylesheet" href="/css/commerce.css" />
+  </head>
+  <body>
+    <a href="#main" class="skip-link">Pular para o conteúdo</a>
+    <main id="main">
+      <p id="admin-loading" class="admin-loading" role="status">
+        Verificando seu acesso…
+      </p>
+      <section id="dashboard" hidden aria-labelledby="dashboard-title">
+        <header class="admin-header">
+          <a href="/" class="admin-brand"
+            ><img
+              src="/assets/images/tadalas-logo.png"
+              alt="TADALAS BURGUER"
+              width="78"
+              height="78"
+            /><span>PAINEL<br /><strong>ADMINISTRATIVO</strong></span></a
+          >
+          <div class="account">
+            <span id="account-name"></span
+            ><a href="/" target="_blank" rel="noopener">Ver site ↗</a
+            ><button id="logout" type="button" class="secondary">Sair</button>
+          </div>
+        </header>
+        <div class="dashboard-content">
+          <div class="page-heading">
+            <div>
+              <p class="eyebrow">SEU CARDÁPIO, DO SEU JEITO.</p>
+              <h1 id="dashboard-title">VISÃO GERAL.</h1>
+              <p class="muted">
+                Os produtos cadastrados aqui aparecem no site.
+              </p>
+            </div>
+            <button class="button" id="new-product" type="button">
+              Novo produto <span aria-hidden="true">+</span>
+            </button>
+          </div>
+          <div class="stats" aria-label="Resumo do catálogo">
+            <article>
+              <span>Produtos cadastrados</span
+              ><strong id="stat-total">0</strong>
+            </article>
+            <article>
+              <span>Disponíveis no cardápio</span
+              ><strong id="stat-available">0</strong>
+            </article>
+            <article>
+              <span>Em destaque</span><strong id="stat-featured">0</strong>
+            </article>
+            <article>
+              <span>Categorias em uso</span
+              ><strong id="stat-categories">0</strong>
+            </article>
+          </div>
+          <nav class="admin-tabs" aria-label="Áreas administrativas">
+            <button
+              class="secondary"
+              type="button"
+              data-admin-panel="catalog"
+              aria-pressed="true"
+            >
+              Produtos</button
+            ><button
+              class="secondary"
+              type="button"
+              data-admin-panel="orders"
+              aria-pressed="false"
+            >
+              Pedidos</button
+            ><button
+              class="secondary"
+              type="button"
+              data-admin-panel="settings"
+              aria-pressed="false"
+            >
+              Configurações</button
+            ><button
+              class="secondary"
+              type="button"
+              data-admin-panel="categories"
+              aria-pressed="false"
+            >
+              Categorias
+            </button>
+          </nav>
+          <p id="ops-error" class="error" role="alert"></p>
+          <section
+            id="catalog-panel"
+            class="catalog-section"
+            aria-labelledby="catalog-title"
+          >
+            <div class="catalog-heading">
+              <div>
+                <p class="eyebrow">GESTÃO DO CATÁLOGO</p>
+                <h2 id="catalog-title">SEUS PRODUTOS.</h2>
+              </div>
+              <button id="refresh" type="button" class="secondary">
+                Atualizar lista
+              </button>
+            </div>
+            <div class="filters">
+              <div>
+                <label for="search">Buscar produto</label
+                ><input
+                  id="search"
+                  type="search"
+                  placeholder="Nome ou descrição"
+                />
+              </div>
+              <div>
+                <label for="category-filter">Categoria</label
+                ><select id="category-filter">
+                  <option value="">Todas as categorias</option>
+                </select>
+              </div>
+              <div>
+                <label for="status-filter">Disponibilidade</label
+                ><select id="status-filter">
+                  <option value="">Todos os produtos</option>
+                  <option value="available">Disponíveis</option>
+                  <option value="unavailable">Indisponíveis</option>
+                </select>
+              </div>
+            </div>
+            <p id="dashboard-error" class="error" role="alert"></p>
+            <p id="result-count" class="muted" aria-live="polite"></p>
+            <div class="table-scroll">
+              <table>
+                <caption class="sr-only">
+                  Produtos do cardápio e ações de edição
+                </caption>
+                <thead>
+                  <tr>
+                    <th scope="col">Produto</th>
+                    <th scope="col">Categoria</th>
+                    <th scope="col">Preço</th>
+                    <th scope="col">Status</th>
+                    <th scope="col">Ações</th>
+                  </tr>
+                </thead>
+                <tbody id="product-rows"></tbody>
+              </table>
+            </div>
+            <div id="empty-state" class="empty-state" hidden>
+              <h3>COMECE PELO PRIMEIRO.</h3>
+              <p>
+                Cadastre um produto com suas informações oficiais para exibi-lo
+                no cardápio.
+              </p>
+            </div>
+          </section>
+          <section id="orders-panel" class="ops-panel" hidden>
+            <h2>PEDIDOS.</h2>
+            <p class="muted">
+              Iniciados no site. Confirme o recebimento pelo WhatsApp antes de
+              aceitar.
+            </p>
+            <div class="ops-row">
+              <label for="ops-status">Filtrar status</label
+              ><select id="ops-status">
+                <option value="">Todos</option>
+                <option value="awaiting_confirmation">
+                  Aguardando confirmação
+                </option>
+                <option value="accepted">Aceito</option>
+                <option value="preparing">Em preparo</option>
+                <option value="out_for_delivery">Saiu para entrega</option>
+                <option value="ready_for_pickup">Pronto para retirada</option>
+                <option value="completed">Concluído</option>
+                <option value="cancelled">Cancelado</option></select
+              ><button class="secondary" id="ops-order-refresh" type="button">
+                Atualizar pedidos
+              </button>
+            </div>
+            <p id="ops-order-count" class="muted"></p>
+            <div id="ops-orders"></div>
+          </section>
+          <section id="settings-panel" class="ops-panel" hidden>
+            <h2>CONFIGURAÇÕES.</h2>
+            <form id="ops-settings-form">
+              <div class="ops-grid">
+                <div>
+                  <label for="setting-brand">Nome da marca</label
+                  ><input id="setting-brand" maxlength="300" />
+                </div>
+                <div>
+                  <label for="setting-whatsappNumber"
+                    >WhatsApp (país + DDD + número)</label
+                  ><input id="setting-whatsappNumber" maxlength="300" />
+                </div>
+                <div>
+                  <label for="setting-instagramUrl"
+                    >Instagram oficial (URL)</label
+                  ><input id="setting-instagramUrl" maxlength="300" />
+                </div>
+                <div>
+                  <label for="setting-address">Endereço da loja</label
+                  ><input id="setting-address" maxlength="300" />
+                </div>
+                <div>
+                  <label for="setting-openingHours"
+                    >Texto de funcionamento (opcional)</label
+                  ><input id="setting-openingHours" maxlength="300" />
+                </div>
+                <div>
+                  <label for="setting-timezone">Fuso horário</label
+                  ><input id="setting-timezone" maxlength="300" />
+                </div>
+                <div>
+                  <label for="setting-estimatedMinutes"
+                    >Estimativa de preparo/entrega, em minutos (opcional)</label
+                  ><input id="setting-estimatedMinutes" maxlength="300" />
+                </div>
+                <div>
+                  <p>Logo da marca</p>
+                  <img
+                    id="ops-logo-preview"
+                    alt="Logo atual"
+                    width="120"
+                    height="120"
+                  /><input id="setting-logoUrl" type="hidden" />
+                </div>
+                <div class="full">
+                  <label for="ops-logo-file">Enviar nova logo</label
+                  ><input
+                    type="file"
+                    id="ops-logo-file"
+                    accept="image/png,image/jpeg,image/webp"
+                  />
+                </div>
+                <div>
+                  <label for="setting-storeMode">Funcionamento</label
+                  ><select id="setting-storeMode">
+                    <option value="manual">Controle manual</option>
+                    <option value="schedule">
+                      Seguir horários cadastrados
+                    </option>
+                  </select>
+                </div>
+                <div>
+                  <label class="ops-checkbox"
+                    ><input type="checkbox" id="setting-manualOpen" /> Receber
+                    pedidos no modo manual</label
+                  >
+                </div>
+                <div class="full">
+                  <h3>Horários semanais</h3>
+                  <p class="muted">
+                    Cadastre um ou mais intervalos por dia. Fechamento anterior
+                    à abertura indica passagem pela meia-noite.
+                  </p>
+                  <div id="ops-schedule"></div>
+                  <button class="secondary" type="button" id="ops-add-schedule">
+                    + Adicionar horário
+                  </button>
+                </div>
+                <div>
+                  <label class="ops-checkbox"
+                    ><input type="checkbox" id="setting-pickupEnabled" />
+                    Permitir retirada</label
+                  >
+                </div>
+                <div>
+                  <label class="ops-checkbox"
+                    ><input type="checkbox" id="setting-deliveryEnabled" />
+                    Permitir entrega</label
+                  >
+                </div>
+                <div class="full">
+                  <h3>Regiões e taxas de entrega</h3>
+                  <p class="muted">
+                    Informe apenas bairros/regiões realmente atendidos e seus
+                    valores em reais.
+                  </p>
+                  <div id="ops-zones"></div>
+                  <button class="secondary" type="button" id="ops-add-zone">
+                    + Adicionar região
+                  </button>
+                </div>
+                <div class="full">
+                  <h3>Pagamento no atendimento</h3>
+                  <label class="ops-checkbox"
+                    ><input type="checkbox" id="setting-payment-pix" />
+                    Pix</label
+                  ><label class="ops-checkbox"
+                    ><input type="checkbox" id="setting-payment-cash" />
+                    Dinheiro</label
+                  ><label class="ops-checkbox"
+                    ><input type="checkbox" id="setting-payment-card" />
+                    Cartão</label
+                  >
+                </div>
+              </div>
+              <p id="ops-mail-status" class="muted"></p>
+              <button class="button" type="submit" id="ops-save-settings">
+                Salvar configurações
+              </button>
+            </form>
+          </section>
+          <section id="categories-panel" class="ops-panel" hidden>
+            <h2>CATEGORIAS.</h2>
+            <form id="ops-category-form" class="ops-row">
+              <label for="ops-category-name">Nova categoria</label
+              ><input id="ops-category-name" maxlength="60" required /><button
+                class="button"
+                type="submit"
+              >
+                Adicionar categoria
+              </button>
+            </form>
+            <div id="ops-categories"></div>
+          </section>
+          <footer class="admin-footer">
+            TADALAS BURGUER · Administração do cardápio
+            <span>Pedidos são concluídos pelo WhatsApp.</span>
+          </footer>
+        </div>
+      </section>
+    </main>
+    <dialog id="product-editor" aria-labelledby="editor-title">
+      <form id="product-form">
+        <div class="modal-heading">
+          <div>
+            <p class="eyebrow">CARDÁPIO TADALAS</p>
+            <h2 id="editor-title">NOVO PRODUTO.</h2>
+          </div>
+          <button
+            class="close-button"
+            type="button"
+            data-close="product-editor"
+            aria-label="Fechar cadastro"
+          >
+            ×
+          </button>
+        </div>
+        <p class="muted">
+          Preencha os dados reais do produto. Campos com * são obrigatórios.
+        </p>
+        <input id="product-id" type="hidden" />
+        <div class="form-grid">
+          <div class="field full">
+            <label for="product-name">Nome *</label
+            ><input id="product-name" maxlength="100" required />
+          </div>
+          <div class="field full">
+            <label for="product-description">Descrição *</label
+            ><textarea
+              id="product-description"
+              rows="3"
+              maxlength="1000"
+              required
+            ></textarea>
+          </div>
+          <div class="field">
+            <label for="product-price">Preço em reais *</label
+            ><input
+              id="product-price"
+              inputmode="decimal"
+              placeholder="Ex.: 29,90"
+              pattern="[0-9]+([,.][0-9]{1,2})?"
+              required
+            /><small>De R$ 0,01 a R$ 100.000,00.</small>
+          </div>
+          <div class="field">
+            <label for="product-category">Categoria *</label
+            ><select id="product-category" required></select>
+          </div>
+          <div class="field full">
+            <label for="product-ingredients">Ingredientes</label
+            ><textarea
+              id="product-ingredients"
+              rows="3"
+              placeholder="Um ingrediente por linha"
+              maxlength="4040"
+            ></textarea>
+          </div>
+          <div class="field full">
+            <label for="product-notes">Observação do produto</label
+            ><textarea
+              id="product-notes"
+              rows="2"
+              maxlength="500"
+              placeholder="Informações adicionais para o cliente"
+            ></textarea>
+          </div>
+          <div class="field full">
+            <label for="product-photo">Fotografia</label
+            ><input
+              id="product-photo"
+              type="file"
+              accept="image/png,image/jpeg,image/webp"
+            /><small
+              >PNG, JPEG ou WebP. Até 3 MB. A foto será enviada ao
+              salvar.</small
+            >
+            <div class="photo-preview">
+              <img
+                id="photo-preview"
+                alt="Fotografia atual do produto"
+                width="160"
+                height="120"
+                hidden
+              /><button
+                id="remove-photo"
+                class="secondary"
+                type="button"
+                hidden
+              >
+                Remover foto
+              </button>
+            </div>
+          </div>
+          <div class="field full">
+            <h3>Personalização do pedido</h3>
+            <p class="muted">
+              Cadastre adicionais e escolhas do combo com seus preços. Para
+              bebida obrigatória, use mínimo 1 e máximo 1.
+            </p>
+            <div id="option-editor"></div>
+            <button type="button" class="secondary" id="add-option-group">
+              + Adicionar grupo
+            </button>
+          </div>
+          <div class="checks full">
+            <label
+              ><input type="checkbox" id="product-available" checked />
+              Disponível para pedidos</label
+            ><label
+              ><input type="checkbox" id="product-featured" /> Destacar no
+              cardápio</label
+            >
+          </div>
+        </div>
+        <p id="editor-error" class="error" role="alert"></p>
+        <div class="modal-actions">
+          <button type="button" class="secondary" data-close="product-editor">
+            Cancelar</button
+          ><button type="submit" class="button" id="save-product">
+            Salvar produto
+          </button>
+        </div>
+      </form>
+    </dialog>
+    <dialog id="delete-dialog" aria-labelledby="delete-title">
+      <div class="modal-heading">
+        <h2 id="delete-title">EXCLUIR PRODUTO?</h2>
+        <button
+          class="close-button"
+          type="button"
+          data-close="delete-dialog"
+          aria-label="Cancelar exclusão"
+        >
+          ×
+        </button>
+      </div>
+      <p id="delete-description"></p>
+      <p class="muted">
+        O item será removido do cardápio e não poderá mais ser pedido. Esta ação
+        não pode ser desfeita pelo painel.
+      </p>
+      <p id="delete-error" class="error" role="alert"></p>
+      <div class="modal-actions">
+        <button type="button" class="secondary" data-close="delete-dialog">
+          Cancelar</button
+        ><button type="button" class="danger" id="confirm-delete">
+          Excluir produto
+        </button>
+      </div>
+    </dialog>
+    <p
+      id="admin-notice"
+      class="admin-notice"
+      role="status"
+      aria-live="polite"
+    ></p>
+    <noscript>Ative o JavaScript para usar o painel administrativo.</noscript>
+  </body>
+</html>
