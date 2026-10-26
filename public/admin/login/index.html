@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex,nofollow" />
+    <meta name="theme-color" content="#0b0b0b" />
+    <title>Login administrativo — TADALAS BURGUER</title>
+    <link rel="icon" href="/assets/images/tadalas-logo.png" type="image/png" />
+    <link rel="stylesheet" href="/css/reset.css" />
+    <link rel="stylesheet" href="/css/tokens.css" />
+    <link rel="stylesheet" href="/css/global.css" />
+    <link rel="stylesheet" href="/admin/admin.css" />
+    <script type="module" src="/js/admin-login.js"></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Pular para o conteúdo</a>
+    <main id="main">
+      <section id="login-view" class="login-view" aria-labelledby="login-title">
+        <div class="login-story">
+          <a href="/" aria-label="Voltar ao site"
+            ><img
+              src="/assets/images/tadalas-logo.png"
+              alt="TADALAS BURGUER"
+              width="220"
+              height="220"
+          /></a>
+          <p class="eyebrow">SABOR COM PERSONALIDADE.</p>
+          <h1>SUA MARCA.<br />SEU CARDÁPIO.<br /><em>SEU CONTROLE.</em></h1>
+          <p>
+            Acesse sua área administrativa para cuidar dos produtos e do
+            cardápio.
+          </p>
+        </div>
+        <div class="login-card">
+          <p class="eyebrow">ÁREA RESTRITA</p>
+          <h2 id="login-title">BEM-VINDO DE VOLTA.</h2>
+          <p class="muted">
+            Use seu acesso administrativo. Para fazer um pedido, acesse o
+            cardápio.
+          </p>
+          <form id="login-form">
+            <label for="username">Usuário</label
+            ><input
+              id="username"
+              name="username"
+              autocomplete="username"
+              maxlength="100"
+              required
+            /><label for="password">Senha</label
+            ><input
+              id="password"
+              name="password"
+              type="password"
+              autocomplete="current-password"
+              maxlength="128"
+              required
+            />
+            <p id="login-error" class="error" role="alert"></p>
+            <button type="submit" class="button" id="login-button">
+              Entrar no painel <span aria-hidden="true">↗</span>
+            </button>
+          </form>
+          <p id="setup-message" class="setup-message" hidden>
+            O primeiro acesso ainda não foi criado. No servidor, execute
+            <code>npm run admin:create</code> para cadastrar seu usuário e
+            senha.
+          </p>
+          <a class="back-link" href="/login/">Login de cliente ↗</a
+          ><a class="back-link" href="/">← Voltar para o site</a>
+        </div>
+      </section>
+    </main>
+    <noscript>Ative o JavaScript para entrar.</noscript>
+  </body>
+</html>

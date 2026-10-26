@@ -1,0 +1,353 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#0B0B0B" />
+    <title>Cardápio e pedidos — TADALAS BURGUER</title>
+    <meta
+      name="description"
+      content="Explore o cardápio da TADALAS BURGUER, monte seu carrinho e finalize seu pedido pelo WhatsApp."
+    />
+    <meta property="og:title" content="Cardápio e pedidos — TADALAS BURGUER" />
+    <meta
+      property="og:description"
+      content="NÃO É SÓ UM HAMBÚRGUER. É TADALAS."
+    />
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="pt_BR" />
+    <link rel="icon" type="image/png" href="/assets/images/tadalas-logo.png" />
+    <link
+      rel="preload"
+      href="/assets/fonts/anton.ttf"
+      as="font"
+      type="font/ttf"
+      crossorigin
+    />
+    <link rel="stylesheet" href="/css/reset.css" />
+    <link rel="stylesheet" href="/css/tokens.css" />
+    <link rel="stylesheet" href="/css/global.css" />
+    <link rel="stylesheet" href="/css/components.css?v=1.2.0" />
+    <link rel="stylesheet" href="/css/responsive.css" />
+    <link rel="stylesheet" href="/css/menu.css?v=2.0.0" />
+    <script type="module" src="/js/main.js?v=5.0.0"></script>
+    <link rel="stylesheet" href="/css/order-page.css" />
+    <link rel="stylesheet" href="/css/commerce.css" />
+  </head>
+  <body class="order-page">
+    <a class="skip-link" href="#conteudo">Pular para o conteúdo</a>
+    <div id="demo-banner" class="demo-banner" hidden>
+      DEMONSTRAÇÃO LOCAL · Produtos fictícios, sem venda ou envio de pedidos.
+    </div>
+    <header class="header">
+      <div class="container header-inner">
+        <a class="brand" href="/" aria-label="Tadalas Burguer — início"
+          ><img
+            src="/assets/images/tadalas-logo.png"
+            alt="TADALAS BURGUER"
+            width="96"
+            height="96" /></a
+        ><button
+          class="menu-toggle"
+          id="menu-toggle"
+          aria-expanded="false"
+          aria-controls="navigation"
+        >
+          Menu <span aria-hidden="true">☰</span>
+        </button>
+        <nav id="navigation" aria-label="Navegação principal">
+          <a href="/">Início</a
+          ><a href="/cardapio/" aria-current="page">Cardápio</a
+          ><a href="/login/" data-customer-link>Entrar</a>
+        </nav>
+        <button
+          class="cart-toggle"
+          id="open-cart"
+          aria-haspopup="dialog"
+          aria-label="Abrir carrinho, 0 itens"
+        >
+          Carrinho <span id="cart-count">0</span>
+        </button>
+      </div>
+    </header>
+    <main id="conteudo">
+      <section
+        class="menu-section container"
+        id="cardapio"
+        aria-labelledby="menu-title"
+      >
+        <div class="menu-intro">
+          <div>
+            <p class="eyebrow">
+              <span class="orange-line"></span>02 / CARDÁPIO TADALAS
+            </p>
+            <h1 id="menu-title">A FOME<br /><em>TEM NOME.</em></h1>
+          </div>
+          <div class="menu-intro-copy">
+            <span class="menu-edition">FEITO PRA SAIR DO COMUM.</span>
+            <p>Escolha seu favorito.<br />O resto é com a Tadalas.</p>
+            <a class="text-link" href="#menu-selection"
+              >Bora escolher <span aria-hidden="true">↓</span></a
+            >
+          </div>
+        </div>
+        <p id="store-status" class="store-status" role="status">
+          Consultando atendimento…
+        </p>
+        <div class="menu-steps" aria-label="Como pedir">
+          <span><b>01</b> Escolha no cardápio</span
+          ><span><b>02</b> Monte seu carrinho</span
+          ><span
+            ><b>03</b> Finalize no WhatsApp <i aria-hidden="true">↗</i></span
+          >
+        </div>
+        <div id="menu-selection" class="menu-selection">
+          <div
+            id="categories"
+            class="categories"
+            role="group"
+            aria-label="Categorias do cardápio"
+          ></div>
+          <div id="menu-tools" class="menu-tools" hidden>
+            <div class="menu-search">
+              <label for="menu-search">Encontre seu favorito</label>
+              <div class="search-field">
+                <span aria-hidden="true">⌕</span
+                ><input
+                  id="menu-search"
+                  type="search"
+                  maxlength="100"
+                  placeholder="Buscar no cardápio…"
+                  autocomplete="off"
+                />
+              </div>
+            </div>
+            <label class="menu-availability"
+              ><input id="menu-available" type="checkbox" /> Só
+              disponíveis</label
+            >
+          </div>
+          <div id="menu-spotlight" class="menu-spotlight" hidden></div>
+          <div id="menu-results-heading" class="menu-results-heading" hidden>
+            <h3 id="menu-category-title">DO SEU JEITO.</h3>
+            <p id="menu-result-count" aria-live="polite"></p>
+          </div>
+          <div id="menu-status" class="menu-empty" role="status">
+            <div class="menu-empty-copy">
+              <span class="empty-index" aria-hidden="true"
+                >[ QUASE NA CHAPA ]</span
+              >
+              <h3>VEM COISA<br /><em>BOA POR AÍ.</em></h3>
+              <p>
+                Nosso cardápio está em preparação. Fale com a Tadalas para
+                consultar as novidades e a disponibilidade.
+              </p>
+              <a
+                class="text-link whatsapp-link"
+                href="https://wa.me/5511960217697"
+                target="_blank"
+                rel="noopener noreferrer"
+                >Conversar no WhatsApp <span aria-hidden="true">↗</span></a
+              >
+            </div>
+            <img
+              class="menu-empty-logo"
+              src="/assets/images/tadalas-logo.png"
+              alt=""
+              width="260"
+              height="260"
+              loading="lazy"
+            />
+          </div>
+          <div
+            id="menu-no-results"
+            class="menu-no-results"
+            role="status"
+            hidden
+          >
+            <span aria-hidden="true">[ NENHUM RESULTADO ]</span>
+            <h3>NÃO ACHOU SUA FOME?</h3>
+            <p>Tente outro nome, ingrediente ou categoria.</p>
+            <button id="menu-reset" class="text-link" type="button">
+              Limpar filtros <span aria-hidden="true">↗</span>
+            </button>
+          </div>
+          <div id="products" class="products"></div>
+          <p id="menu-order-note" class="menu-order-note" hidden>
+            <span aria-hidden="true">↗</span> Seu pedido continua no WhatsApp. O
+            atendimento confirma disponibilidade, valores e entrega.
+          </p>
+        </div>
+      </section>
+    </main>
+    <footer class="order-footer container">
+      <span>© <span id="year">2026</span> TADALAS BURGUER</span>
+      <div>
+        <a
+          class="whatsapp-link"
+          href="https://wa.me/5511960217697"
+          target="_blank"
+          rel="noopener noreferrer"
+          >Precisa de ajuda? WhatsApp ↗</a
+        ><a href="/admin/login/">Área administrativa</a>
+      </div>
+    </footer>
+    <dialog
+      id="product-dialog"
+      class="product-dialog"
+      aria-labelledby="product-title"
+    >
+      <div class="dialog-top">
+        <span class="eyebrow">CONHEÇA O SEU BURGUER</span
+        ><button
+          class="icon-button"
+          data-close="product-dialog"
+          aria-label="Fechar detalhes"
+        >
+          ×
+        </button>
+      </div>
+      <div id="product-detail"></div>
+      <form id="add-form">
+        <label for="product-quantity">Quantidade</label
+        ><input
+          id="product-quantity"
+          name="quantity"
+          type="number"
+          min="1"
+          max="99"
+          step="1"
+          value="1"
+          required
+        /><button class="button" type="submit">
+          Adicionar ao pedido <span aria-hidden="true">+</span>
+        </button>
+      </form>
+    </dialog>
+    <dialog id="cart-dialog" class="cart-dialog" aria-labelledby="cart-title">
+      <div class="dialog-top">
+        <div>
+          <p class="eyebrow">TADALAS BURGUER</p>
+          <h2 id="cart-title">SEU CARRINHO.</h2>
+        </div>
+        <button
+          class="icon-button"
+          data-close="cart-dialog"
+          aria-label="Fechar pedido"
+        >
+          ×
+        </button>
+      </div>
+      <div id="cart-items"></div>
+      <div id="cart-summary" hidden>
+        <label for="order-notes"
+          >Observações <span class="muted">(opcional)</span></label
+        ><textarea
+          id="order-notes"
+          maxlength="500"
+          rows="3"
+          placeholder="Algum detalhe sobre o pedido?"
+        ></textarea>
+        <div class="subtotal">
+          <span>Subtotal</span><strong id="cart-total">R$ 0,00</strong>
+        </div>
+        <div id="checkout-details" class="checkout-details">
+          <label for="checkout-name">Seu nome</label
+          ><input
+            id="checkout-name"
+            autocomplete="name"
+            maxlength="80"
+            required
+          /><label for="fulfillment-method">Como você quer receber?</label
+          ><select id="fulfillment-method">
+            <option value="pickup">Retirada na loja</option>
+          </select>
+          <p id="pickup-address" class="cart-disclaimer"></p>
+          <div id="delivery-fields" hidden>
+            <div id="saved-address-field" hidden>
+              <label for="saved-address">Endereço salvo</label
+              ><select id="saved-address">
+                <option value="">Preencher outro endereço</option>
+              </select>
+            </div>
+            <label for="delivery-zone">Região de entrega</label
+            ><select id="delivery-zone">
+              <option value="">Selecione</option></select
+            ><label for="address-street">Rua</label
+            ><input
+              id="address-street"
+              autocomplete="address-line1"
+              maxlength="150"
+            /><label for="address-number">Número</label
+            ><input
+              id="address-number"
+              autocomplete="off"
+              maxlength="150"
+            /><label for="address-neighborhood">Bairro</label
+            ><input
+              id="address-neighborhood"
+              autocomplete="address-level3"
+              maxlength="150"
+            /><label for="address-city">Cidade</label
+            ><input
+              id="address-city"
+              autocomplete="address-level2"
+              maxlength="150"
+            /><label for="address-complement">Complemento (opcional)</label
+            ><input
+              id="address-complement"
+              autocomplete="address-line2"
+              maxlength="150"
+            /><label for="address-postalCode">CEP (opcional)</label
+            ><input
+              id="address-postalCode"
+              autocomplete="postal-code"
+              maxlength="150"
+            />
+          </div>
+          <label for="payment-method">Pagamento no atendimento</label
+          ><select id="payment-method">
+            <option value="pix">Pix</option>
+            <option value="cash">Dinheiro</option>
+            <option value="card">Cartão</option>
+          </select>
+          <div id="cash-fields" hidden>
+            <label for="change-for">Troco para (opcional, em reais)</label
+            ><input
+              id="change-for"
+              pattern="[0-9]+([,.][0-9]{1,2})?"
+              inputmode="decimal"
+              placeholder="Ex.: 100,00"
+            />
+          </div>
+          <p id="estimate" class="cart-disclaimer"></p>
+        </div>
+        <div class="subtotal">
+          <span>Taxa de entrega</span><strong id="delivery-total">—</strong>
+        </div>
+        <div class="subtotal">
+          <span>Total do pedido</span><strong id="order-total">—</strong>
+        </div>
+        <p class="cart-disclaimer">
+          O atendimento confirma disponibilidade, valores finais e condições de
+          entrega. O envio da mensagem não confirma o pedido.
+        </p>
+        <p id="checkout-error" role="alert"></p>
+        <button class="button" id="checkout">
+          Continuar no WhatsApp <span aria-hidden="true">↗</span></button
+        ><button class="clear-button" id="clear-cart">Limpar pedido</button>
+      </div>
+    </dialog>
+    <button id="cart-bar" class="cart-bar" aria-haspopup="dialog" hidden>
+      <span>Ver meu carrinho <span id="cart-bar-count">0 itens</span></span
+      ><strong id="cart-bar-total">R$ 0,00</strong
+      ><span aria-hidden="true">↗</span>
+    </button>
+    <div id="toast" class="toast" role="status" aria-live="polite"></div>
+    <noscript
+      ><p class="noscript">
+        Ative o JavaScript para montar seu pedido ou fale pelo WhatsApp.
+      </p></noscript
+    >
+  </body>
+</html>
