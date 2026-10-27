@@ -1,6 +1,7 @@
 import { request } from './api.js';
 import { el } from './components/dom.js';
 import { formatPrice } from './cart.js';
+import { initPostalCode } from './postal-code.js';
 export function initCheckout({ getItems, getConfig, toast }) {
   const $ = (s) => document.querySelector(s);
   let session = null,
@@ -84,6 +85,38 @@ export function initCheckout({ getItems, getConfig, toast }) {
     for (const key of ['street', 'number', 'neighborhood', 'city'])
       $(`#address-${key}`).required = delivery;
   }
+  const normalize = (value) =>
+    value
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .trim()
+      .toLowerCase();
+  function matchZone() {
+    const neighborhood = normalize($('#address-neighborhood').value);
+    const matches = (getConfig()?.deliveryZones || []).filter(
+      (z) => normalize(z.name) === neighborhood,
+    );
+    $('#delivery-zone').value = matches.length === 1 ? matches[0].id : '';
+    return matches.length === 1;
+  }
+  const postal = initPostalCode({
+    input: $('#address-postalCode'),
+    button: $('#address-lookup'),
+    status: $('#address-postal-status'),
+    fields: {
+      street: $('#address-street'),
+      neighborhood: $('#address-neighborhood'),
+      city: $('#address-city'),
+    },
+    onAddress() {
+      const matched = matchZone();
+      if (!matched)
+        $('#address-postal-status').textContent +=
+          ' Selecione uma região atendida correspondente ao bairro. Se ele não estiver na lista, consulte o atendimento.';
+      changed();
+    },
+  });
+  $('#address-neighborhood').addEventListener('input', matchZone);
   $('#checkout-details').addEventListener('input', () => {
     visibility();
     changed();
@@ -94,18 +127,16 @@ export function initCheckout({ getItems, getConfig, toast }) {
   });
   $('#order-notes').addEventListener('input', changed);
   $('#saved-address').addEventListener('change', () => {
+    postal.cancel();
     const saved = JSON.parse(
       $('#saved-address').selectedOptions[0]?.dataset.address || 'null',
     );
     if (saved)
       for (const key of fields) $(`#address-${key}`).value = saved[key] || '';
+    matchZone();
     changed();
   });
   $('#delivery-zone').addEventListener('change', () => {
-    const zone = getConfig()?.deliveryZones?.find(
-      (z) => z.id === $('#delivery-zone').value,
-    );
-    if (zone) $('#address-neighborhood').value = zone.name;
     changed();
   });
   $('#checkout').addEventListener('click', async () => {

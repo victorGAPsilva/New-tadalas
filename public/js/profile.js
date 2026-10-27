@@ -1,5 +1,6 @@
 import { el } from './components/dom.js';
 import { addItem, restoreCart, formatPrice } from './cart.js';
+import { initPostalCode } from './postal-code.js';
 const labels = {
   awaiting_confirmation: 'Aguardando confirmação',
   accepted: 'Aceito',
@@ -21,6 +22,16 @@ export function initProfile(session, api) {
     'complement',
     'postalCode',
   ];
+  const postal = initPostalCode({
+    input: $('#saved-postalCode'),
+    button: $('#saved-lookup'),
+    status: $('#saved-postal-status'),
+    fields: {
+      street: $('#saved-street'),
+      neighborhood: $('#saved-neighborhood'),
+      city: $('#saved-city'),
+    },
+  });
   function error(message) {
     $('#profile-extra-error').textContent = message;
   }
@@ -151,6 +162,7 @@ export function initProfile(session, api) {
           remove = el('button', 'Excluir', 'logout-button');
         edit.type = remove.type = 'button';
         edit.onclick = () => {
+          postal.cancel();
           editing = address.id;
           for (const field of fields)
             $(`#saved-${field}`).value = address[field] || '';
@@ -191,6 +203,7 @@ export function initProfile(session, api) {
         editing ? 'PUT' : 'POST',
       );
       editing = null;
+      postal.cancel();
       $('#address-form').reset();
       $('#address-editor-title').textContent = 'NOVO ENDEREÇO';
       await addresses();
@@ -201,6 +214,7 @@ export function initProfile(session, api) {
     }
   };
   $('#new-address').onclick = () => {
+    postal.cancel();
     editing = null;
     $('#address-form').reset();
     $('#address-editor-title').textContent = 'NOVO ENDEREÇO';

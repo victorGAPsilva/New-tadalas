@@ -30,7 +30,7 @@
     <link rel="stylesheet" href="/css/components.css?v=1.2.0" />
     <link rel="stylesheet" href="/css/responsive.css" />
     <link rel="stylesheet" href="/css/menu.css?v=2.0.0" />
-    <script type="module" src="/js/main.js?v=6.0.0"></script>
+    <script type="module" src="/js/main.js?v=7.0.0"></script>
     <link rel="stylesheet" href="/css/order-page.css" />
     <link rel="stylesheet" href="/css/commerce.css" />
     <link rel="stylesheet" href="/css/order-polish.css?v=1.0.0" />
@@ -265,6 +265,28 @@
           </select>
           <p id="pickup-address" class="cart-disclaimer"></p>
           <div id="delivery-fields" hidden>
+            <label for="address-postalCode"
+              >CEP (opcional, para buscar o endereço)</label
+            >
+            <div class="postal-search">
+              <input
+                id="address-postalCode"
+                autocomplete="postal-code"
+                inputmode="numeric"
+                maxlength="9"
+                pattern="[0-9]{5}-?[0-9]{3}"
+                placeholder="00000-000"
+                aria-describedby="address-postal-status"
+              />
+              <button id="address-lookup" type="button" class="secondary">
+                Buscar CEP
+              </button>
+            </div>
+            <p
+              id="address-postal-status"
+              class="postal-status"
+              role="status"
+            ></p>
             <div id="saved-address-field" hidden>
               <label for="saved-address">Endereço salvo</label
               ><select id="saved-address">
@@ -298,11 +320,6 @@
             ><input
               id="address-complement"
               autocomplete="address-line2"
-              maxlength="150"
-            /><label for="address-postalCode">CEP (opcional)</label
-            ><input
-              id="address-postalCode"
-              autocomplete="postal-code"
               maxlength="150"
             />
           </div>

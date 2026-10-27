@@ -10,7 +10,7 @@
     <link rel="stylesheet" href="/css/tokens.css" />
     <link rel="stylesheet" href="/css/global.css" />
     <link rel="stylesheet" href="/css/account.css" />
-    <script type="module" src="/js/login.js?v=5.0.0"></script>
+    <script type="module" src="/js/login.js?v=6.0.0"></script>
     <link rel="stylesheet" href="/css/commerce.css" />
   </head>
   <body>
@@ -166,6 +166,28 @@
             </button>
             <form id="address-form" class="ops-card">
               <h3 id="address-editor-title">NOVO ENDEREÇO</h3>
+              <label for="saved-postalCode"
+                >CEP (opcional, para buscar o endereço)</label
+              >
+              <div class="postal-search">
+                <input
+                  id="saved-postalCode"
+                  autocomplete="postal-code"
+                  inputmode="numeric"
+                  maxlength="9"
+                  pattern="[0-9]{5}-?[0-9]{3}"
+                  placeholder="00000-000"
+                  aria-describedby="saved-postal-status"
+                />
+                <button id="saved-lookup" type="button" class="logout-button">
+                  Buscar CEP
+                </button>
+              </div>
+              <p
+                id="saved-postal-status"
+                class="postal-status"
+                role="status"
+              ></p>
               <label for="saved-label">Nome do endereço (ex.: Casa)</label
               ><input id="saved-label" maxlength="150" required /><label
                 for="saved-street"
@@ -182,10 +204,7 @@
               ><input id="saved-city" maxlength="150" required /><label
                 for="saved-complement"
                 >Complemento (opcional)</label
-              ><input id="saved-complement" maxlength="150" /><label
-                for="saved-postalCode"
-                >CEP (opcional)</label
-              ><input id="saved-postalCode" maxlength="150" /><button
+              ><input id="saved-complement" maxlength="150" /><button
                 id="save-address"
                 class="button"
                 type="submit"

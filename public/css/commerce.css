@@ -3,6 +3,40 @@
   color: #b5edbc;
   font-size: 0.8rem;
 }
+.postal-search {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}
+.postal-search input {
+  flex: 1 1 140px;
+  min-width: 0;
+  width: auto;
+}
+.checkout-details .postal-search input {
+  width: auto;
+}
+.postal-search button {
+  min-height: 48px;
+  padding: 10px 14px;
+  border: 1px solid #666;
+  border-radius: 6px;
+  background: #202020;
+  color: var(--color-text);
+}
+.postal-status {
+  font-size: 0.78rem;
+  line-height: 1.5;
+  color: var(--color-text-muted);
+  margin: 10px 0 18px;
+}
+.postal-status:empty {
+  display: none;
+}
+.postal-search button[aria-busy='true'] {
+  opacity: 0.7;
+}
 .store-closed {
   color: #ffb081;
 }

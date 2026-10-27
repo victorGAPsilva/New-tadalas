@@ -5,7 +5,10 @@ import { createCatalog } from './services/catalog.js';
 import { apiRouter } from './routes/api.js';
 import { errorHandler } from './middleware/errors.js';
 import { createAuth } from './services/auth.js';
-import { defaultDataDirectory } from './services/storage.js';
+import {
+  defaultDataDirectory,
+  defaultUploadDirectory,
+} from './services/storage.js';
 import { adminRouter } from './routes/admin.js';
 import { customerService } from './services/customers.js';
 import { customerRouter } from './routes/customers.js';
@@ -14,6 +17,8 @@ import { settingsService } from './services/settings.js';
 import { orderService } from './services/orders.js';
 import { accountMailService } from './services/mail.js';
 import { commerceRouter } from './routes/commerce.js';
+import { createPostalService } from './services/postal.js';
+import { postalRouter } from './routes/postal.js';
 export function createApp(options = {}) {
   const app = express();
   app.disable('x-powered-by');
@@ -23,9 +28,7 @@ export function createApp(options = {}) {
   const store = openStore(directory);
   const settings = settingsService(store, options);
   const catalog = createCatalog({ ...options, store });
-  const uploadDirectory =
-    options.uploadDirectory ||
-    new URL('../public/assets/uploads/', import.meta.url);
+  const uploadDirectory = options.uploadDirectory || defaultUploadDirectory;
   const auth = createAuth({
     dataDirectory: options.dataDirectory || fileURLToPath(defaultDataDirectory),
     secureCookies:
@@ -103,6 +106,9 @@ export function createApp(options = {}) {
   );
   app.use(
     '/api',
+    postalRouter(
+      createPostalService({ fetchImpl: options.postalFetch, now: options.now }),
+    ),
     commerceRouter({ orders, customerAuth, settings }),
     apiRouter(catalog),
   );

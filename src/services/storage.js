@@ -1,7 +1,13 @@
 import { readFile, mkdir, writeFile, rename, unlink } from 'node:fs/promises';
-import { dirname, join } from 'node:path';
+import { dirname, join, resolve, sep } from 'node:path';
 import { randomUUID } from 'node:crypto';
-export const defaultDataDirectory = new URL('../../var/', import.meta.url);
+import { pathToFileURL } from 'node:url';
+export const defaultDataDirectory = process.env.DATA_DIRECTORY
+  ? pathToFileURL(resolve(process.env.DATA_DIRECTORY) + sep)
+  : new URL('../../var/', import.meta.url);
+export const defaultUploadDirectory = process.env.UPLOAD_DIRECTORY
+  ? pathToFileURL(resolve(process.env.UPLOAD_DIRECTORY) + sep)
+  : new URL('../../public/assets/uploads/', import.meta.url);
 export async function readJson(file, fallback) {
   try {
     return JSON.parse(await readFile(file, 'utf8'));
