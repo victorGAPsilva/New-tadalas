@@ -11,8 +11,9 @@
     <link rel="stylesheet" href="/css/tokens.css" />
     <link rel="stylesheet" href="/css/global.css" />
     <link rel="stylesheet" href="/admin/admin.css" />
-    <script type="module" src="/admin/admin.js?v=5.0.0"></script>
+    <script type="module" src="/admin/admin.js?v=6.0.0"></script>
     <link rel="stylesheet" href="/css/commerce.css" />
+    <link rel="stylesheet" href="/admin/store-controls.css" />
   </head>
   <body>
     <a href="#main" class="skip-link">Pular para o conteúdo</a>
@@ -49,6 +50,76 @@
               Novo produto <span aria-hidden="true">+</span>
             </button>
           </div>
+          <section
+            class="store-controls"
+            aria-labelledby="store-controls-title"
+          >
+            <div class="store-control-heading">
+              <div>
+                <p class="eyebrow">ATENDIMENTO DA LOJA</p>
+                <h2 id="store-controls-title">Sua loja, no seu horário.</h2>
+                <p
+                  id="admin-store-status"
+                  class="admin-store-status"
+                  role="status"
+                >
+                  Consultando funcionamento…
+                </p>
+                <p id="admin-store-mode" class="muted"></p>
+              </div>
+              <button
+                id="admin-store-toggle"
+                class="button"
+                type="button"
+                disabled
+              >
+                Aguarde…
+              </button>
+            </div>
+            <p class="store-control-hint">
+              Abrir ou fechar agora ativa o controle manual, que permanece até
+              você ativar os horários novamente. Fechar bloqueia novos pedidos;
+              os pedidos recebidos continuam no painel.
+            </p>
+            <p id="admin-store-error" role="alert"></p>
+            <details id="admin-store-hours">
+              <summary>Definir horários de abertura e fechamento</summary>
+              <form id="admin-store-hours-form">
+                <p class="muted">
+                  Escolha os dias e horários de atendimento. Dias sem intervalo
+                  ficam fechados no modo automático. Fechamento antes da
+                  abertura indica o dia seguinte.
+                </p>
+                <p id="admin-store-timezone" class="muted"></p>
+                <div id="admin-store-schedule"></div>
+                <div class="store-control-actions">
+                  <button
+                    class="secondary"
+                    id="admin-store-add-slot"
+                    type="button"
+                  >
+                    + Adicionar dia / intervalo
+                  </button>
+                  <button
+                    class="secondary"
+                    id="admin-store-reload"
+                    type="button"
+                  >
+                    Recarregar horários salvos
+                  </button>
+                  <button
+                    class="button"
+                    id="admin-store-save-hours"
+                    type="submit"
+                    disabled
+                  >
+                    Salvar e ativar horários
+                  </button>
+                </div>
+                <p id="admin-store-hours-feedback" role="status"></p>
+              </form>
+            </details>
+          </section>
           <div class="stats" aria-label="Resumo do catálogo">
             <article>
               <span>Produtos cadastrados</span

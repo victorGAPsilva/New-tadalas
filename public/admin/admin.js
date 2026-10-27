@@ -1,5 +1,6 @@
 import { optionEditor } from './option-editor.js';
 import { initOperations } from './operations.js';
+import { initStoreControls } from './store-controls.js';
 import { el } from '/js/components/dom.js';
 import { formatPrice } from '/js/cart.js';
 const $ = (selector) => document.querySelector(selector);
@@ -296,6 +297,7 @@ $('#confirm-delete').addEventListener('click', async () => {
 async function init() {
   try {
     activate(await api('/session', { authProbe: true }));
+    initStoreControls({ api, notice });
     await refresh();
   } catch {
     window.location.replace('/admin/login/');
