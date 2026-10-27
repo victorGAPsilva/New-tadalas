@@ -41,8 +41,11 @@ async function api(
     if (response.status === 401 && path !== '/login' && !authProbe) {
       lock();
     }
-    throw new Error(
-      result.error?.message || 'Não foi possível concluir a operação.',
+    throw Object.assign(
+      new Error(
+        result.error?.message || 'Não foi possível concluir a operação.',
+      ),
+      { status: response.status },
     );
   }
   return result.data;

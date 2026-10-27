@@ -1,121 +1,12 @@
+import { initOrdersPanel } from './orders-panel.js';
 import { el } from '/js/components/dom.js';
-import { formatPrice } from '/js/cart.js';
-export const statusLabels = {
-  awaiting_confirmation: 'Aguardando confirmação',
-  accepted: 'Aceito',
-  preparing: 'Em preparo',
-  out_for_delivery: 'Saiu para entrega',
-  ready_for_pickup: 'Pronto para retirada',
-  completed: 'Concluído',
-  cancelled: 'Cancelado',
-};
-const next = {
-  awaiting_confirmation: ['accepted', 'cancelled'],
-  accepted: ['preparing', 'cancelled'],
-  preparing: ['out_for_delivery', 'ready_for_pickup', 'cancelled'],
-  out_for_delivery: ['completed', 'cancelled'],
-  ready_for_pickup: ['completed', 'cancelled'],
-  completed: [],
-  cancelled: [],
-};
 export function initOperations({ api, notice, onCategoriesChanged }) {
   const $ = (s) => document.querySelector(s);
   let settings,
     active = 'catalog',
     poll;
   const error = (message) => ($('#ops-error').textContent = message);
-  async function loadOrders() {
-    try {
-      const orders = await api(
-          `/orders?status=${encodeURIComponent($('#ops-status').value)}`,
-        ),
-        list = $('#ops-orders');
-      list.replaceChildren();
-      $('#ops-order-count').textContent =
-        `${orders.length} pedidos exibidos (até os 100 mais recentes)`;
-      if (!orders.length)
-        list.append(el('p', 'Nenhum pedido para este filtro.', 'muted'));
-      for (const order of orders) {
-        const card = el('article', undefined, 'ops-card');
-        card.append(
-          el('h3', `${order.number} · ${statusLabels[order.status]}`),
-          el(
-            'p',
-            `${order.customerName} · ${new Date(order.createdAt).toLocaleString('pt-BR')} · ${order.fulfillment.method === 'delivery' ? 'Entrega' : 'Retirada'}`,
-          ),
-        );
-        const ul = el('ul');
-        for (const item of order.items)
-          ul.append(
-            el(
-              'li',
-              `${item.quantity}x ${item.name} · ${formatPrice(item.priceCents * item.quantity)}${item.optionsDescription?.length ? ' — ' + item.optionsDescription.join('; ') : ''}`,
-            ),
-          );
-        card.append(
-          ul,
-          el(
-            'p',
-            `Total: ${formatPrice(order.totalCents)} · Entrega: ${formatPrice(order.deliveryFeeCents)}`,
-          ),
-        );
-        if (order.fulfillment.address)
-          card.append(
-            el(
-              'p',
-              `Endereço: ${Object.values(order.fulfillment.address).filter(Boolean).join(', ')} · ${order.fulfillment.zoneName}`,
-            ),
-          );
-        card.append(
-          el(
-            'p',
-            `Pagamento: ${{ pix: 'Pix', cash: 'Dinheiro', card: 'Cartão' }[order.payment.method]}${order.payment.changeForCents ? ' · troco para ' + formatPrice(order.payment.changeForCents) : ''}`,
-          ),
-        );
-        if (order.notes) card.append(el('p', `Observações: ${order.notes}`));
-        const allowed = next[order.status].filter(
-          (status) =>
-            !(
-              (status === 'out_for_delivery' &&
-                order.fulfillment.method !== 'delivery') ||
-              (status === 'ready_for_pickup' &&
-                order.fulfillment.method !== 'pickup')
-            ),
-        );
-        if (allowed.length) {
-          const row = el('div', undefined, 'ops-row'),
-            select = el('select');
-          select.setAttribute('aria-label', `Novo status de ${order.number}`);
-          for (const value of allowed) {
-            const o = el('option', statusLabels[value]);
-            o.value = value;
-            select.append(o);
-          }
-          const button = el('button', 'Atualizar status', 'button');
-          button.type = 'button';
-          button.addEventListener('click', async () => {
-            button.disabled = true;
-            try {
-              await api(`/orders/${order.id}/status`, {
-                method: 'PATCH',
-                body: { status: select.value, version: order.version },
-              });
-              notice('Status atualizado.');
-              await loadOrders();
-            } catch (e) {
-              error(e.message);
-              button.disabled = false;
-            }
-          });
-          row.append(select, button);
-          card.append(row);
-        }
-        list.append(card);
-      }
-    } catch (e) {
-      error(e.message);
-    }
-  }
+  const orderPanel = initOrdersPanel({ api, notice });
   function scheduleRow(slot = { day: 0, open: '', close: '' }) {
     const row = el('div', undefined, 'ops-row'),
       day = el('select');
@@ -264,13 +155,11 @@ export function initOperations({ api, notice, onCategoriesChanged }) {
       $('#orders-panel').hidden = active !== 'orders';
       $('#settings-panel').hidden = active !== 'settings';
       $('#categories-panel').hidden = active !== 'categories';
-      if (active === 'orders') loadOrders();
+      if (active === 'orders') orderPanel.refresh();
       if (active === 'settings') loadSettings();
       if (active === 'categories') loadCategories();
     }),
   );
-  $('#ops-order-refresh').addEventListener('click', loadOrders);
-  $('#ops-status').addEventListener('change', loadOrders);
   $('#ops-add-schedule').addEventListener('click', () => scheduleRow());
   $('#ops-add-zone').addEventListener('click', () => zoneRow());
   $('#ops-category-form').addEventListener('submit', async (event) => {
@@ -344,8 +233,14 @@ export function initOperations({ api, notice, onCategoriesChanged }) {
       !document.hidden &&
       !$('#orders-panel').contains(document.activeElement)
     )
-      loadOrders();
+      orderPanel.refresh({ background: true });
   }, 15000);
   window.addEventListener('pagehide', () => clearInterval(poll));
-  return { refresh: loadOrders };
+  if (
+    ['pedidos', 'orders'].includes(
+      new URLSearchParams(location.search).get('aba'),
+    )
+  )
+    document.querySelector('[data-admin-panel="orders"]').click();
+  return { refresh: orderPanel.refresh };
 }

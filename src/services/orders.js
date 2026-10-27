@@ -39,6 +39,12 @@ export function orderService(
   settings,
   { demo = false, now = Date.now, delivery } = {},
 ) {
+  store.db.function('order_search_text', (value) =>
+    String(value || '')
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .toLowerCase(),
+  );
   const decode = (row) =>
     row
       ? {
@@ -257,6 +263,78 @@ export function orderService(
         )
         .all(...(status ? [status] : []))
         .map(decode);
+    },
+    dashboard({ view = 'active', q = '', page = '1' } = {}) {
+      const views = {
+        active: [
+          'awaiting_confirmation',
+          'accepted',
+          'preparing',
+          'out_for_delivery',
+          'ready_for_pickup',
+        ],
+        new: ['awaiting_confirmation'],
+        preparing: ['accepted', 'preparing'],
+        dispatch: ['out_for_delivery', 'ready_for_pickup'],
+        completed: ['completed'],
+        cancelled: ['cancelled'],
+        all: [],
+      };
+      if (
+        typeof view !== 'string' ||
+        !Object.hasOwn(views, view) ||
+        typeof q !== 'string' ||
+        q.length > 100 ||
+        typeof page !== 'string' ||
+        !/^[1-9]\d{0,5}$/.test(page)
+      )
+        throw fail('Filtros de pedidos inválidos.');
+      const params = [],
+        clauses = [];
+      if (views[view].length) {
+        clauses.push(`status IN (${views[view].map(() => '?').join(',')})`);
+        params.push(...views[view]);
+      }
+      if (q.trim()) {
+        clauses.push(
+          "order_search_text(json_extract(payload,'$.customerName') || ' ' || json_extract(payload,'$.number')) LIKE ? ESCAPE '\\'",
+        );
+        const text = q
+          .trim()
+          .normalize('NFD')
+          .replace(/[\u0300-\u036f]/g, '')
+          .toLowerCase()
+          .replace(/[\\%_]/g, '\\$&');
+        params.push(`%${text}%`);
+      }
+      const where = clauses.length ? `WHERE ${clauses.join(' AND ')}` : '';
+      const total = Number(
+        store.db
+          .prepare(`SELECT count(*) total FROM orders ${where}`)
+          .get(...params).total,
+      );
+      const pageSize = 20,
+        pages = Math.max(1, Math.ceil(total / pageSize));
+      const currentPage = Math.min(Number(page), pages);
+      const direction = ['active', 'new', 'preparing', 'dispatch'].includes(
+        view,
+      )
+        ? 'ASC'
+        : 'DESC';
+      const orders = store.db
+        .prepare(
+          `SELECT * FROM orders ${where} ORDER BY seq ${direction} LIMIT ? OFFSET ?`,
+        )
+        .all(...params, pageSize, (currentPage - 1) * pageSize)
+        .map(decode);
+      const counts = Object.fromEntries(
+        Object.keys(transitions).map((status) => [status, 0]),
+      );
+      for (const row of store.db
+        .prepare('SELECT status,count(*) total FROM orders GROUP BY status')
+        .all())
+        counts[row.status] = Number(row.total);
+      return { orders, counts, total, page: currentPage, pages, pageSize };
     },
     listCustomer(customerId) {
       return store.db

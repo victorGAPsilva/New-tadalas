@@ -11,9 +11,10 @@
     <link rel="stylesheet" href="/css/tokens.css" />
     <link rel="stylesheet" href="/css/global.css" />
     <link rel="stylesheet" href="/admin/admin.css" />
-    <script type="module" src="/admin/admin.js?v=7.0.0"></script>
+    <script type="module" src="/admin/admin.js?v=8.0.0"></script>
     <link rel="stylesheet" href="/css/commerce.css" />
     <link rel="stylesheet" href="/admin/store-controls.css" />
+    <link rel="stylesheet" href="/admin/orders-panel.css" />
   </head>
   <body>
     <a href="#main" class="skip-link">Pular para o conteúdo</a>
@@ -235,30 +236,124 @@
             </div>
           </section>
           <section id="orders-panel" class="ops-panel" hidden>
-            <h2>PEDIDOS.</h2>
+            <div class="orders-heading">
+              <div>
+                <p class="eyebrow">DA CONFIRMAÇÃO À ENTREGA</p>
+                <h2>CENTRAL DE PEDIDOS.</h2>
+              </div>
+              <button class="secondary" id="ops-order-refresh" type="button">
+                Atualizar pedidos ↻
+              </button>
+            </div>
             <p class="muted">
               Iniciados no site. Confirme o recebimento pelo WhatsApp antes de
               aceitar.
             </p>
-            <div class="ops-row">
-              <label for="ops-status">Filtrar status</label
-              ><select id="ops-status">
-                <option value="">Todos</option>
-                <option value="awaiting_confirmation">
-                  Aguardando confirmação
-                </option>
-                <option value="accepted">Aceito</option>
-                <option value="preparing">Em preparo</option>
-                <option value="out_for_delivery">Saiu para entrega</option>
-                <option value="ready_for_pickup">Pronto para retirada</option>
-                <option value="completed">Concluído</option>
-                <option value="cancelled">Cancelado</option></select
-              ><button class="secondary" id="ops-order-refresh" type="button">
-                Atualizar pedidos
+            <div class="orders-stats" aria-label="Resumo de todos os pedidos">
+              <article>
+                <span>Aguardando confirmação</span
+                ><strong id="orders-new-count">—</strong>
+              </article>
+              <article>
+                <span>Aceitos e em preparo</span
+                ><strong id="orders-preparing-count">—</strong>
+              </article>
+              <article>
+                <span>Em entrega ou prontos</span
+                ><strong id="orders-dispatch-count">—</strong>
+              </article>
+              <article>
+                <span>Concluídos no histórico</span
+                ><strong id="orders-completed-count">—</strong>
+              </article>
+            </div>
+            <div
+              class="orders-filters"
+              role="group"
+              aria-label="Filtrar etapas dos pedidos"
+            >
+              <button
+                type="button"
+                data-order-view="active"
+                aria-pressed="true"
+              >
+                Em andamento
+              </button>
+              <button type="button" data-order-view="new" aria-pressed="false">
+                Novos
+              </button>
+              <button
+                type="button"
+                data-order-view="preparing"
+                aria-pressed="false"
+              >
+                Preparo
+              </button>
+              <button
+                type="button"
+                data-order-view="dispatch"
+                aria-pressed="false"
+              >
+                Entrega / retirada
+              </button>
+              <button
+                type="button"
+                data-order-view="completed"
+                aria-pressed="false"
+              >
+                Concluídos
+              </button>
+              <button
+                type="button"
+                data-order-view="cancelled"
+                aria-pressed="false"
+              >
+                Cancelados
+              </button>
+              <button type="button" data-order-view="all" aria-pressed="false">
+                Todos
               </button>
             </div>
-            <p id="ops-order-count" class="muted"></p>
-            <div id="ops-orders"></div>
+            <label for="orders-search"
+              >Buscar por número do pedido ou nome do cliente</label
+            >
+            <input
+              id="orders-search"
+              type="search"
+              maxlength="100"
+              placeholder="Ex.: TB-000001 ou nome do cliente"
+              autocomplete="off"
+            />
+            <p id="orders-error" class="error" role="alert"></p>
+            <p id="ops-order-count" class="muted" aria-live="polite"></p>
+            <div
+              id="ops-orders"
+              class="orders-grid"
+              aria-label="Pedidos encontrados"
+              aria-busy="false"
+            ></div>
+            <div id="orders-empty" class="orders-empty" hidden>
+              <span aria-hidden="true">↗</span>
+              <h3>Nenhum pedido nesta fila.</h3>
+              <p>
+                Os pedidos iniciados no site aparecem aqui. Experimente outra
+                etapa ou ajuste a busca.
+              </p>
+            </div>
+            <nav class="orders-pagination" aria-label="Páginas de pedidos">
+              <button id="orders-prev" class="secondary" type="button" disabled>
+                ← Anterior</button
+              ><span id="orders-page">—</span
+              ><button
+                id="orders-next"
+                class="secondary"
+                type="button"
+                disabled
+              >
+                Próxima →
+              </button>
+            </nav>
+            <p id="orders-updated" class="muted"></p>
           </section>
           <section id="settings-panel" class="ops-panel" hidden>
             <h2>CONFIGURAÇÕES.</h2>

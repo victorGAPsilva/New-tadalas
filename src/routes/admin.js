@@ -82,6 +82,9 @@ export function adminRouter({
   router.get('/orders', (req, res) =>
     res.json({ data: orders.listAdmin(req.query.status || '') }),
   );
+  router.get('/orders/dashboard', (req, res) =>
+    res.json({ data: orders.dashboard(req.query) }),
+  );
   router.patch('/orders/:id/status', (req, res) =>
     res.json({ data: orders.status(req.params.id, req.body) }),
   );

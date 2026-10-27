@@ -586,6 +586,98 @@ test('histórico, repetir pedido, endereços e isolamento entre clientes', () =>
     );
   }));
 
+test('painel pagina histórico, busca sem acentos e mantém pedidos ativos antigos na fila', () =>
+  harness(async ({ app, admin, client, orderInput }) => {
+    assert.equal(
+      (await client().send('/api/admin/orders/dashboard')).status,
+      401,
+    );
+    const first = (
+      await client().send('/api/orders', 'POST', {
+        ...orderInput(),
+        customerName: 'José Cliente',
+        expectedTotalCents: 6000,
+      })
+    ).data;
+    const store = app.locals.services.store;
+    store.transaction(() => {
+      const insert = store.db.prepare(
+        'INSERT INTO orders(id,customer_id,status,version,payload,created_at,idempotency_key,request_hash) VALUES(?,NULL,?,1,?,?,?,?)',
+      );
+      for (let i = 0; i < 125; i++) {
+        const order = {
+          ...first,
+          id: randomUUID(),
+          number: `HIST-${i}`,
+          customerName: 'Outro cliente',
+          status: 'completed',
+        };
+        insert.run(
+          order.id,
+          order.status,
+          JSON.stringify(order),
+          order.createdAt,
+          randomUUID(),
+          'fixture',
+        );
+      }
+    });
+    const active = await admin.send('/api/admin/orders/dashboard');
+    assert.equal(active.status, 200);
+    assert.equal(active.data.total, 1);
+    assert.equal(active.data.orders[0].id, first.id);
+    assert.equal(active.data.counts.completed, 125);
+    assert.equal(active.data.counts.awaiting_confirmation, 1);
+    const history = (
+      await admin.send('/api/admin/orders/dashboard?view=completed&page=2')
+    ).data;
+    assert.equal(history.orders.length, 20);
+    assert.equal(history.total, 125);
+    assert.equal(history.pages, 7);
+    assert.equal(history.page, 2);
+    assert.equal(
+      (await admin.send('/api/admin/orders/dashboard?view=all&q=JOSE')).data
+        .orders[0].id,
+      first.id,
+    );
+    assert.equal(
+      (await admin.send('/api/admin/orders/dashboard?view=all&q=%25')).data
+        .total,
+      0,
+    );
+    assert.equal(
+      (await admin.send('/api/admin/orders/dashboard?view=completed&page=999'))
+        .data.page,
+      7,
+    );
+    assert.equal(
+      (await admin.send('/api/admin/orders/dashboard?view=unknown')).status,
+      400,
+    );
+    assert.equal(
+      (await admin.send('/api/admin/orders/dashboard?page=-1')).status,
+      400,
+    );
+    assert.equal(
+      (await admin.send('/api/admin/orders/dashboard?q=a&q=b')).status,
+      400,
+    );
+    assert.equal(
+      (await admin.send(`/api/admin/orders/dashboard?q=${'a'.repeat(101)}`))
+        .status,
+      400,
+    );
+    await admin.send(`/api/admin/orders/${first.id}/status`, 'PATCH', {
+      status: 'accepted',
+      version: first.version,
+    });
+    const updated = (
+      await admin.send('/api/admin/orders/dashboard?view=preparing')
+    ).data;
+    assert.equal(updated.orders[0].status, 'accepted');
+    assert.equal(updated.counts.awaiting_confirmation, 0);
+  }));
+
 test('entrega por km usa rota do servidor, revalida preço e preserva idempotência', async () => {
   let calls = 0,
     broken = false;
