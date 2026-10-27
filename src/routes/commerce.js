@@ -17,10 +17,19 @@ export function commerceRouter({ orders, customerAuth, settings }) {
     }
     next();
   });
-  router.post('/orders/quote', (req, res) =>
-    res.json({ data: orders.quote(req.body) }),
-  );
-  router.post('/orders', (req, res) => {
+  const quoteAttempts = new Map();
+  router.post('/orders/quote', async (req, res) => {
+    const now = Date.now();
+    for (const [ip, entry] of quoteAttempts)
+      if (entry.until <= now) quoteAttempts.delete(ip);
+    const entry = quoteAttempts.get(req.ip) || { count: 0, until: now + 60000 };
+    if (entry.count >= 30 || quoteAttempts.size >= 10000)
+      throw fail('Muitos cálculos. Aguarde um minuto.', 429);
+    entry.count++;
+    quoteAttempts.set(req.ip, entry);
+    res.json({ data: await orders.quote(req.body) });
+  });
+  router.post('/orders', async (req, res) => {
     const now = Date.now();
     for (const [ip, attempt] of attempts)
       if (attempt.until <= now) attempts.delete(ip);
@@ -35,7 +44,7 @@ export function commerceRouter({ orders, customerAuth, settings }) {
     const session = customerAuth.session(req);
     if (session && req.get('X-CSRF-Token') !== session.csrfToken)
       throw fail('Recarregue sua sessão antes de finalizar.', 403);
-    const order = orders.create(req.body, session?.customerId || null);
+    const order = await orders.create(req.body, session?.customerId || null);
     res.status(201).json({
       data: {
         ...order,

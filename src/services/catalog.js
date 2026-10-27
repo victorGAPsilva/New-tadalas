@@ -14,6 +14,7 @@ export function createCatalog({
   dataDirectory = fileURLToPath(defaultDataDirectory),
   store = openStore(dataDirectory),
   now,
+  deliveryReady,
 } = {}) {
   const repository = {
     list: () => store.list('products'),
@@ -26,7 +27,11 @@ export function createCatalog({
       });
     },
   };
-  const settings = settingsService(store, { whatsappNumber, now });
+  const settings = settingsService(store, {
+    whatsappNumber,
+    now,
+    deliveryReady,
+  });
   const assertEditable = () => {
     if (demo)
       throw fail(

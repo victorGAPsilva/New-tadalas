@@ -190,6 +190,10 @@ export function initOperations({ api, notice, onCategoriesChanged }) {
       $('#ops-logo-preview').src =
         settings.logoUrl || '/assets/images/tadalas-logo.png';
       $('#setting-storeMode').value = settings.storeMode;
+      $('#setting-deliveryPricing').value = settings.deliveryPricing || 'zones';
+      $('#ops-delivery-status').textContent = settings.deliveryRouteConfigured
+        ? 'Serviço de rotas configurado.'
+        : 'Frete por km pendente: configure GOOGLE_ROUTES_API_KEY no ambiente do servidor. A entrega por distância fica indisponível ao cliente até essa configuração.';
       for (const key of ['manualOpen', 'pickupEnabled', 'deliveryEnabled'])
         $(`#setting-${key}`).checked = settings[key];
       for (const m of ['pix', 'cash', 'card'])
@@ -319,6 +323,7 @@ export function initOperations({ api, notice, onCategoriesChanged }) {
       for (const key of ['manualOpen', 'pickupEnabled', 'deliveryEnabled'])
         body[key] = $(`#setting-${key}`).checked;
       body.storeMode = $('#setting-storeMode').value;
+      body.deliveryPricing = $('#setting-deliveryPricing').value;
       body.schedule = [...$('#ops-schedule').children].map((r) => r.read());
       body.deliveryZones = [...$('#ops-zones').children].map((r) => r.read());
       body.paymentMethods = ['pix', 'cash', 'card'].filter(

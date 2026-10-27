@@ -94,3 +94,13 @@ Endpoint GET `/api/address/:postalCode` fixa a origem HTTPS do ViaCEP, valida fo
 Preparados `DATA_DIRECTORY` e `UPLOAD_DIRECTORY` para armazenar banco, backups e imagens em volume persistente na futura hospedagem. Teste em processos separados confirmou retenção dos dados e do arquivo de upload e geração de backup íntegro no volume configurado. Nenhuma hospedagem foi criada, nenhum domínio foi comprado e SMTP continua desabilitado.
 
 Verificação: 32 testes aprovados, lint e formatação aprovados. Novos casos cobrem CEP inválido/inexistente/genérico, falha de rede, resposta incompatível, cache/expiração, compartilhamento de consultas, limite HTTP, edição manual, respostas antigas e persistência entre processos. O roteiro em `docs/lancamento.md` separa o que foi automatizado das conferências ainda pendentes no navegador e na hospedagem real. Acesso ao navegador permanece restrito; nenhum contorno, e-mail real ou pedido comercial enviado.
+
+## Atualização — preparação do frete por quilômetro (27/10/2026)
+
+Implementada alternativa de frete proporcional a R$ 2,00/km de rota de carro, somente ida, com arredondamento em centavos. ViaCEP confirmou a origem informada: Rua Conceição do Almeida, 88, Parque Paulistano, São Paulo/SP, CEP 08081-370. Endereço e modo por distância salvos na base local após backup privado `antes-frete-por-km-*.sqlite`; novos produtos cadastrados durante o trabalho foram preservados.
+
+Google Routes preparado via chave privada no ambiente, timeout e limite de consultas simultâneas. Nenhuma conta/chave configurada, contratação ou consulta paga foi feita. A entrega continua indisponível para o cliente até configurar o serviço. O checkout tem cálculo explícito de frete, distância com atribuição Google Maps e total antes de continuar. Configuração administrativa permite escolher distância ou bairros. A cota de pedidos limita cálculos por IP, e erros de rota nunca viram frete gratuito.
+
+Pedido e cotação usam cálculos no servidor. A consulta externa acontece antes da transação; após ela, catálogo/configuração/preço são revalidados. Idempotência preservada em repetições, inclusive com provedor indisponível após registro. Histórico mantém a tarifa comercial, sem persistir conteúdo da resposta do Google. Ativação em produção ainda depende da chave, validação real das rotas e dos requisitos públicos de termos/privacidade do provedor, documentados no README.
+
+37 testes aprovados, incluindo proporcionalidade, arredondamento, validação de distância, origem controlada pelo servidor, falha/ausência de provedor, reabertura de pedidos idempotentes e alteração da loja enquanto aguarda a rota sem bloquear o SQLite. Revisão visual continua pendente, sem contorno da restrição de navegador.

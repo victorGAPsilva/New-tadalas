@@ -111,7 +111,12 @@ export function buildWhatsAppUrl(number, order) {
       ? [
           order.fulfillment.method === 'pickup'
             ? 'Retirada na loja'
-            : `Entrega: ${Object.values(order.fulfillment.address).filter(Boolean).join(', ')} — ${order.fulfillment.zoneName}`,
+            : `Entrega: ${Object.values(order.fulfillment.address).filter(Boolean).join(', ')}${order.fulfillment.zoneName ? ' — ' + order.fulfillment.zoneName : ''}`,
+          ...(order.fulfillment.deliveryPricing === 'distance'
+            ? [
+                `Frete por distância: ${formatPrice(order.fulfillment.rateCentsPerKm)} por km de rota (somente ida).`,
+              ]
+            : []),
         ]
       : []),
     ...(order.payment

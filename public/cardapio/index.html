@@ -30,7 +30,7 @@
     <link rel="stylesheet" href="/css/components.css?v=1.2.0" />
     <link rel="stylesheet" href="/css/responsive.css" />
     <link rel="stylesheet" href="/css/menu.css?v=2.0.0" />
-    <script type="module" src="/js/main.js?v=7.1.0"></script>
+    <script type="module" src="/js/main.js?v=8.0.0"></script>
     <link rel="stylesheet" href="/css/order-page.css" />
     <link rel="stylesheet" href="/css/commerce.css" />
     <link rel="stylesheet" href="/css/order-polish.css?v=1.0.0" />
@@ -294,10 +294,13 @@
                 <option value="">Preencher outro endereço</option>
               </select>
             </div>
-            <label for="delivery-zone">Região de entrega</label
-            ><select id="delivery-zone">
-              <option value="">Selecione</option></select
-            ><label for="address-street">Rua</label
+            <div id="delivery-region-fields">
+              <label for="delivery-zone">Região de entrega</label
+              ><select id="delivery-zone">
+                <option value="">Selecione</option>
+              </select>
+            </div>
+            <label for="address-street">Rua</label
             ><input
               id="address-street"
               autocomplete="address-line1"
@@ -323,6 +326,29 @@
               autocomplete="address-line2"
               maxlength="150"
             />
+            <div id="delivery-calculation" hidden>
+              <p class="cart-disclaimer">
+                Entrega: R$ 2,00 por km da rota da loja até seu endereço,
+                somente ida. Cobrança proporcional à distância, arredondada em
+                centavos.
+              </p>
+              <button id="calculate-delivery" type="button" class="button">
+                Calcular entrega
+              </button>
+              <p
+                id="delivery-route-summary"
+                class="cart-disclaimer"
+                role="status"
+              ></p>
+              <p
+                id="delivery-route-attribution"
+                class="maps-attribution"
+                translate="no"
+                hidden
+              >
+                Google Maps
+              </p>
+            </div>
           </div>
           <label for="payment-method">Pagamento no atendimento</label
           ><select id="payment-method">

@@ -11,7 +11,7 @@
     <link rel="stylesheet" href="/css/tokens.css" />
     <link rel="stylesheet" href="/css/global.css" />
     <link rel="stylesheet" href="/admin/admin.css" />
-    <script type="module" src="/admin/admin.js?v=6.0.0"></script>
+    <script type="module" src="/admin/admin.js?v=7.0.0"></script>
     <link rel="stylesheet" href="/css/commerce.css" />
     <link rel="stylesheet" href="/admin/store-controls.css" />
   </head>
@@ -352,10 +352,28 @@
                   >
                 </div>
                 <div class="full">
-                  <h3>Regiões e taxas de entrega</h3>
+                  <h3>Cálculo da entrega</h3>
+                  <label for="setting-deliveryPricing"
+                    >Como cobrar o frete</label
+                  >
+                  <select id="setting-deliveryPricing">
+                    <option value="zones">Valor fixo por bairro</option>
+                    <option value="distance">
+                      Distância da loja · R$ 2,00 por km
+                    </option>
+                  </select>
+                  <p class="muted">
+                    No modo por distância, o cliente informa o endereço e
+                    calcula o frete pela rota de carro, somente ida. O valor é
+                    proporcional, sem arredondar quilômetros inteiros. Cadastre
+                    o endereço completo da loja acima.
+                  </p>
+                  <p id="ops-delivery-status" class="muted"></p>
+                  <h3>Regiões e taxas fixas por bairro</h3>
                   <p class="muted">
                     Informe apenas bairros/regiões realmente atendidos e seus
-                    valores em reais.
+                    valores em reais. Estas regiões são usadas somente no modo
+                    de valor fixo por bairro.
                   </p>
                   <div id="ops-zones"></div>
                   <button class="secondary" type="button" id="ops-add-zone">

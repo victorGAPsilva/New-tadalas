@@ -18,6 +18,9 @@ export function initCheckout({ getItems, getConfig, toast }) {
     'complement',
     'postalCode',
   ];
+  const byDistance = () =>
+    getConfig()?.deliveryPricing === 'distance' &&
+    $('#fulfillment-method').value === 'delivery';
   function input() {
     return {
       items: getItems(),
@@ -58,11 +61,20 @@ export function initCheckout({ getItems, getConfig, toast }) {
       quote = result;
       $('#delivery-total').textContent = formatPrice(result.deliveryFeeCents);
       $('#order-total').textContent = formatPrice(result.totalCents);
+      if (result.deliveryDistanceMeters !== undefined) {
+        $('#delivery-route-summary').textContent =
+          `${(result.deliveryDistanceMeters / 1000).toLocaleString('pt-BR', { maximumFractionDigits: 3 })} km de rota · ${formatPrice(result.deliveryFeeCents)} de entrega.`;
+        $('#delivery-route-attribution').hidden = false;
+      }
       $('#checkout-error').textContent = '';
       $('#checkout').disabled = false;
     } catch (error) {
-      if (current === revision)
+      if (current === revision) {
         $('#checkout-error').textContent = error.message;
+        if (byDistance())
+          $('#delivery-route-summary').textContent =
+            'Confira os dados do endereço e tente calcular novamente.';
+      }
     }
   }
   function changed() {
@@ -75,6 +87,14 @@ export function initCheckout({ getItems, getConfig, toast }) {
     revision++;
     $('#checkout').disabled = true;
     clearTimeout(timer);
+    if (byDistance()) {
+      $('#delivery-total').textContent = '—';
+      $('#order-total').textContent = '—';
+      $('#delivery-route-summary').textContent =
+        'Preencha o endereço completo e clique em Calcular entrega.';
+      $('#delivery-route-attribution').hidden = true;
+      return;
+    }
     timer = setTimeout(calculate, 250);
   }
   function visibility() {
@@ -82,9 +102,24 @@ export function initCheckout({ getItems, getConfig, toast }) {
     $('#delivery-fields').hidden = !delivery;
     $('#pickup-address').hidden = delivery;
     $('#cash-fields').hidden = $('#payment-method').value !== 'cash';
+    $('#delivery-region-fields').hidden =
+      getConfig()?.deliveryPricing === 'distance';
+    $('#delivery-calculation').hidden = !byDistance();
+    $('#address-postalCode').required = byDistance();
     for (const key of ['street', 'number', 'neighborhood', 'city'])
       $(`#address-${key}`).required = delivery;
   }
+  $('#calculate-delivery').addEventListener('click', async () => {
+    const button = $('#calculate-delivery');
+    button.disabled = true;
+    $('#delivery-route-summary').textContent =
+      'Calculando a rota e a taxa de entrega…';
+    try {
+      await calculate();
+    } finally {
+      button.disabled = false;
+    }
+  });
   const normalize = (value) =>
     value
       .normalize('NFD')
@@ -110,7 +145,7 @@ export function initCheckout({ getItems, getConfig, toast }) {
     },
     onAddress() {
       const matched = matchZone();
-      if (!matched)
+      if (!matched && getConfig()?.deliveryPricing !== 'distance')
         $('#address-postal-status').textContent +=
           ' Selecione uma região atendida correspondente ao bairro. Se ele não estiver na lista, consulte o atendimento.';
       changed();
@@ -204,21 +239,36 @@ export function initCheckout({ getItems, getConfig, toast }) {
       modes.replaceChildren();
       for (const [id, name, enabled] of [
         ['pickup', 'Retirada na loja', config.pickupEnabled],
-        ['delivery', 'Entrega', config.deliveryEnabled],
+        [
+          'delivery',
+          'Entrega',
+          config.deliveryEnabled && config.deliveryReady !== false,
+        ],
       ]) {
         const o = el('option', enabled ? name : `${name} (indisponível)`);
         o.value = id;
         o.disabled = !enabled;
         modes.append(o);
       }
-      modes.value = config.pickupEnabled ? 'pickup' : 'delivery';
-      $('#fulfillment-note').textContent = !config.deliveryEnabled
-        ? 'No momento, atendemos somente com retirada na loja.'
-        : !config.pickupEnabled
-          ? 'No momento, atendemos somente com entrega.'
+      const deliveryAvailable =
+        config.deliveryEnabled && config.deliveryReady !== false;
+      modes.value = config.pickupEnabled
+        ? 'pickup'
+        : deliveryAvailable
+          ? 'delivery'
           : '';
+      $('#fulfillment-note').textContent =
+        !deliveryAvailable && !config.pickupEnabled
+          ? 'Entrega e retirada estão indisponíveis no momento. Consulte o atendimento.'
+          : !deliveryAvailable
+            ? 'No momento, atendemos somente com retirada na loja.'
+            : !config.pickupEnabled
+              ? 'No momento, atendemos somente com entrega.'
+              : '';
       $('#fulfillment-note').hidden =
-        config.pickupEnabled && config.deliveryEnabled;
+        config.pickupEnabled &&
+        config.deliveryEnabled &&
+        config.deliveryReady !== false;
       $('#pickup-address').textContent =
         config.address ||
         'O endereço de retirada será confirmado pelo atendimento.';

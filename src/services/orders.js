@@ -1,6 +1,7 @@
 import { randomUUID, createHash } from 'node:crypto';
 import { validateOrder } from './order.js';
 import { fail } from './product-validation.js';
+import { distanceFee, deliveryRateCentsPerKm } from './delivery.js';
 export const transitions = {
   awaiting_confirmation: ['accepted', 'cancelled'],
   accepted: ['preparing', 'cancelled'],
@@ -36,7 +37,7 @@ export function validateAddress(address) {
 export function orderService(
   store,
   settings,
-  { demo = false, now = Date.now } = {},
+  { demo = false, now = Date.now, delivery } = {},
 ) {
   const decode = (row) =>
     row
@@ -49,7 +50,7 @@ export function orderService(
       : null;
   const find = (id) =>
     decode(store.db.prepare('SELECT * FROM orders WHERE id=?').get(id));
-  function quote(input) {
+  function calculate(input, distanceMeters, preparing = false) {
     const config = settings.public();
     if (!config.status.open)
       throw fail('A loja está fechada ou com pedidos pausados.', 409);
@@ -62,29 +63,42 @@ export function orderService(
     const method = input.fulfillment?.method || 'pickup';
     let address = null,
       zone = null;
+    const byDistance = config.deliveryPricing === 'distance';
     if (!['pickup', 'delivery'].includes(method))
       throw fail('Escolha entrega ou retirada.');
     if (method === 'pickup' && !config.pickupEnabled)
       throw fail('Retirada indisponível.', 409);
     if (method === 'delivery') {
       if (!config.deliveryEnabled) throw fail('Entrega indisponível.', 409);
-      zone = config.deliveryZones.find(
-        (z) => z.id === input.fulfillment?.zoneId,
-      );
-      if (!zone) throw fail('Selecione uma região atendida.');
       address = validateAddress(input.fulfillment.address);
-      const normalize = (value) =>
-        value
-          .normalize('NFD')
-          .replace(/[\u0300-\u036f]/g, '')
-          .trim()
-          .toLowerCase();
-      if (normalize(address.neighborhood) !== normalize(zone.name))
-        throw fail(
-          'Selecione a região de entrega correspondente ao bairro informado.',
+      if (byDistance) {
+        if (!address.postalCode)
+          throw fail('Informe o CEP para calcular a entrega.');
+        if (!preparing && distanceMeters === undefined)
+          throw fail('Recalcule a entrega antes de continuar.', 409);
+      } else {
+        zone = config.deliveryZones.find(
+          (z) => z.id === input.fulfillment?.zoneId,
         );
+        if (!zone) throw fail('Selecione uma região atendida.');
+        const normalize = (value) =>
+          value
+            .normalize('NFD')
+            .replace(/[\u0300-\u036f]/g, '')
+            .trim()
+            .toLowerCase();
+        if (normalize(address.neighborhood) !== normalize(zone.name))
+          throw fail(
+            'Selecione a região de entrega correspondente ao bairro informado.',
+          );
+      }
     }
-    const deliveryFeeCents = zone?.feeCents || 0;
+    const deliveryFeeCents =
+      method === 'delivery' && byDistance
+        ? preparing
+          ? 0
+          : distanceFee(distanceMeters)
+        : zone?.feeCents || 0;
     const payment = input.payment?.method || config.paymentMethods[0];
     if (!config.paymentMethods.includes(payment))
       throw fail('Forma de pagamento indisponível.');
@@ -100,6 +114,10 @@ export function orderService(
       throw fail('O valor para troco deve cobrir o total do pedido.');
     return {
       ...order,
+      settingsVersion: config.version,
+      ...(method === 'delivery' && byDistance && !preparing
+        ? { deliveryDistanceMeters: distanceMeters }
+        : {}),
       deliveryFeeCents,
       totalCents,
       fulfillment: {
@@ -108,15 +126,39 @@ export function orderService(
         zoneName: zone?.name || null,
         address,
         pickupAddress: method === 'pickup' ? config.address : null,
+        deliveryPricing: method === 'delivery' ? config.deliveryPricing : null,
+        ...(method === 'delivery' && byDistance
+          ? { rateCentsPerKm: deliveryRateCentsPerKm }
+          : {}),
       },
       payment: { method: payment, changeForCents },
       estimatedMinutes: config.estimatedMinutes,
       confirmed: false,
     };
   }
+  async function quote(input) {
+    const initial = calculate(input, undefined, true);
+    if (initial.fulfillment.deliveryPricing !== 'distance') return initial;
+    const config = settings.public();
+    if (!delivery?.configured || !config.address)
+      throw fail(
+        'Cálculo de entrega indisponível. Consulte o atendimento ou escolha retirada.',
+        409,
+      );
+    const meters = await delivery.distance(
+      config.address,
+      initial.fulfillment.address,
+    );
+    if (settings.get().version !== initial.settingsVersion)
+      throw fail(
+        'As configurações de entrega mudaram. Confira o total novamente.',
+        409,
+      );
+    return calculate(input, meters);
+  }
   return {
     quote,
-    create(input, customerId = null) {
+    async create(input, customerId = null) {
       if (!input || typeof input !== 'object')
         throw fail('Informe os dados do pedido.');
       if (demo)
@@ -129,6 +171,19 @@ export function orderService(
       const hash = createHash('sha256')
         .update(JSON.stringify({ input, customerId }))
         .digest('hex');
+      const existing = store.db
+        .prepare('SELECT * FROM orders WHERE idempotency_key=?')
+        .get(input.idempotencyKey);
+      if (existing) {
+        if (
+          existing.request_hash !== hash ||
+          existing.customer_id !== customerId
+        )
+          throw fail('A tentativa de pedido mudou. Atualize o carrinho.', 409);
+        return decode(existing);
+      }
+      // Resolve the route before opening the SQLite transaction.
+      const quoted = await quote(input);
       return store.transaction(() => {
         const previous = store.db
           .prepare('SELECT * FROM orders WHERE idempotency_key=?')
@@ -144,7 +199,15 @@ export function orderService(
             );
           return decode(previous);
         }
-        const priced = quote(input);
+        if (settings.get().version !== quoted.settingsVersion)
+          throw fail(
+            'As configurações mudaram. Confira o total novamente.',
+            409,
+          );
+        const priced = calculate(input, quoted.deliveryDistanceMeters);
+        // Keep the business charge, not Google route content, in order history.
+        delete priced.deliveryDistanceMeters;
+        delete priced.settingsVersion;
         if (input.expectedTotalCents !== priced.totalCents)
           throw fail(
             'Os valores mudaram. Confira o total atualizado antes de continuar.',

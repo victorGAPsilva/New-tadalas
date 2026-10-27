@@ -19,6 +19,7 @@ import { accountMailService } from './services/mail.js';
 import { commerceRouter } from './routes/commerce.js';
 import { createPostalService } from './services/postal.js';
 import { postalRouter } from './routes/postal.js';
+import { createDeliveryService } from './services/delivery.js';
 export function createApp(options = {}) {
   const app = express();
   app.disable('x-powered-by');
@@ -26,8 +27,16 @@ export function createApp(options = {}) {
   const directory =
     options.dataDirectory || fileURLToPath(defaultDataDirectory);
   const store = openStore(directory);
-  const settings = settingsService(store, options);
-  const catalog = createCatalog({ ...options, store });
+  const delivery = options.deliveryService || createDeliveryService();
+  const settings = settingsService(store, {
+    ...options,
+    deliveryReady: delivery.configured,
+  });
+  const catalog = createCatalog({
+    ...options,
+    store,
+    deliveryReady: delivery.configured,
+  });
   const uploadDirectory = options.uploadDirectory || defaultUploadDirectory;
   const auth = createAuth({
     dataDirectory: options.dataDirectory || fileURLToPath(defaultDataDirectory),
@@ -78,7 +87,7 @@ export function createApp(options = {}) {
       return Boolean(c) && (c.authVersion || 0) === session.authVersion;
     },
   });
-  const orders = orderService(store, settings, options);
+  const orders = orderService(store, settings, { ...options, delivery });
   const mail = accountMailService(store, customers, options);
   app.locals.services = { store, settings, catalog, customers, orders, mail };
   app.use(

@@ -1,5 +1,6 @@
 import { randomUUID } from 'node:crypto';
 import { fail } from './product-validation.js';
+import { deliveryRateCentsPerKm } from './delivery.js';
 export function storeStatus(settings, now = new Date()) {
   if (settings.storeMode === 'manual')
     return {
@@ -35,7 +36,11 @@ export function storeStatus(settings, now = new Date()) {
 }
 export function settingsService(
   store,
-  { whatsappNumber, now = Date.now } = {},
+  {
+    whatsappNumber,
+    now = Date.now,
+    deliveryReady = Boolean(process.env.GOOGLE_ROUTES_API_KEY),
+  } = {},
 ) {
   const operation = () => {
     const value = store.get('settings', 'public');
@@ -62,11 +67,24 @@ export function settingsService(
       this.update({ ...previous, ...changes, version: input.version });
       return operation();
     },
-    get: () => store.get('settings', 'public'),
+    get() {
+      const value = store.get('settings', 'public');
+      return {
+        ...value,
+        deliveryPricing: value.deliveryPricing || 'zones',
+        deliveryRateCentsPerKm,
+        deliveryRouteConfigured: Boolean(deliveryReady),
+      };
+    },
     public() {
       const value = store.get('settings', 'public');
       return {
         ...value,
+        deliveryPricing: value.deliveryPricing || 'zones',
+        deliveryRateCentsPerKm,
+        deliveryReady:
+          value.deliveryPricing !== 'distance' ||
+          Boolean(deliveryReady && value.address),
         whatsappNumber: whatsappNumber || value.whatsappNumber,
         status: storeStatus(value, new Date(now())),
       };
@@ -152,8 +170,24 @@ export function settingsService(
         seen.add(id);
         return { id, name: z.name.trim(), feeCents: z.feeCents };
       });
-      if (input.deliveryEnabled && !deliveryZones.length)
+      const deliveryPricing =
+        input.deliveryPricing ?? previous.deliveryPricing ?? 'zones';
+      if (!['zones', 'distance'].includes(deliveryPricing))
+        throw fail('Forma de cálculo de entrega inválida.');
+      if (
+        input.deliveryEnabled &&
+        deliveryPricing === 'zones' &&
+        !deliveryZones.length
+      )
         throw fail('Cadastre ao menos uma região com sua taxa.');
+      if (
+        input.deliveryEnabled &&
+        deliveryPricing === 'distance' &&
+        !text('address', 300)
+      )
+        throw fail(
+          'Cadastre o endereço completo da loja para calcular a distância.',
+        );
       const paymentMethods = input.paymentMethods;
       if (
         !Array.isArray(paymentMethods) ||
@@ -198,6 +232,7 @@ export function settingsService(
         schedule,
         pickupEnabled: input.pickupEnabled,
         deliveryEnabled: input.deliveryEnabled,
+        deliveryPricing,
         deliveryZones,
         paymentMethods: [...new Set(paymentMethods)],
         estimatedMinutes,

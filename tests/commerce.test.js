@@ -51,7 +51,7 @@ const product = {
     },
   ],
 };
-async function harness(run, { email = false } = {}) {
+async function harness(run, { email = false, deliveryService } = {}) {
   const directory = await mkdtemp(join(tmpdir(), 'tadalas-commerce-'));
   await atomicJson(join(directory, 'admin.json'), {
     username: 'admin-test',
@@ -61,6 +61,7 @@ async function harness(run, { email = false } = {}) {
   let now = Date.parse('2026-10-24T22:00:00Z');
   const sent = [];
   const app = createApp({
+    deliveryService,
     dataDirectory: directory,
     now: () => now,
     mailer: {
@@ -584,6 +585,197 @@ test('histórico, repetir pedido, endereços e isolamento entre clientes', () =>
       200,
     );
   }));
+
+test('entrega por km usa rota do servidor, revalida preço e preserva idempotência', async () => {
+  let calls = 0,
+    broken = false;
+  await harness(
+    async ({ admin, client, orderInput }) => {
+      const config = (await admin.send('/api/admin/settings')).data;
+      assert.equal(
+        (
+          await admin.send('/api/admin/settings', 'PUT', {
+            ...config,
+            address: 'Origem fixture, 88, São Paulo/SP',
+            deliveryEnabled: true,
+            deliveryPricing: 'distance',
+            deliveryZones: [],
+          })
+        ).status,
+        200,
+      );
+      const guest = client(),
+        input = orderInput();
+      input.fulfillment = {
+        method: 'delivery',
+        address: {
+          street: 'Rua fixture',
+          number: '10',
+          neighborhood: 'Bairro',
+          city: 'São Paulo',
+          postalCode: '01001-000',
+        },
+        distanceMeters: 1,
+      };
+      input.deliveryFeeCents = 0;
+      const quoted = await guest.send('/api/orders/quote', 'POST', input);
+      assert.equal(quoted.status, 200);
+      assert.equal(quoted.data.deliveryDistanceMeters, 3500);
+      assert.equal(quoted.data.deliveryFeeCents, 700);
+      assert.equal(quoted.data.totalCents, 6700);
+      const result = await guest.send('/api/orders', 'POST', {
+        ...input,
+        expectedTotalCents: 6700,
+      });
+      assert.equal(result.status, 201);
+      assert.equal(result.data.deliveryFeeCents, 700);
+      assert.equal(result.data.deliveryDistanceMeters, undefined);
+      assert.equal(result.data.fulfillment.rateCentsPerKm, 200);
+      assert.match(
+        new URL(result.data.whatsappUrl).searchParams.get('text'),
+        /2,00 por km/,
+      );
+      assert.doesNotMatch(
+        new URL(result.data.whatsappUrl).searchParams.get('text'),
+        /null/,
+      );
+      const alreadyCalled = calls;
+      broken = true;
+      const retry = await guest.send('/api/orders', 'POST', {
+        ...input,
+        expectedTotalCents: 6700,
+      });
+      assert.equal(retry.data.id, result.data.id);
+      assert.equal(calls, alreadyCalled);
+      assert.equal((await admin.send('/api/admin/orders')).data.length, 1);
+    },
+    {
+      deliveryService: {
+        configured: true,
+        distance: async (origin, address) => {
+          calls++;
+          if (broken) throw new Error('Provider unavailable');
+          assert.match(origin, /Origem fixture/);
+          assert.equal(address.number, '10');
+          return 3500;
+        },
+      },
+    },
+  );
+});
+
+test('entrega sem provedor não vira grátis; retirada continua funcionando', () =>
+  harness(
+    async ({ admin, client, orderInput }) => {
+      const config = (await admin.send('/api/admin/settings')).data;
+      assert.equal(
+        (
+          await admin.send('/api/admin/settings', 'PUT', {
+            ...config,
+            address: 'Origem fixture, 88',
+            deliveryEnabled: true,
+            deliveryPricing: 'distance',
+          })
+        ).status,
+        200,
+      );
+      const guest = client();
+      const publicConfig = (await guest.send('/api/config/public')).data;
+      assert.equal(publicConfig.deliveryReady, false);
+      assert.equal(publicConfig.GOOGLE_ROUTES_API_KEY, undefined);
+      assert.equal(
+        (await guest.send('/api/orders/quote', 'POST', orderInput())).data
+          .deliveryFeeCents,
+        0,
+      );
+      const input = orderInput();
+      input.fulfillment = {
+        method: 'delivery',
+        address: {
+          street: 'Rua fixture',
+          number: '10',
+          neighborhood: 'Bairro',
+          city: 'São Paulo',
+          postalCode: '01001-000',
+        },
+      };
+      assert.equal(
+        (await guest.send('/api/orders/quote', 'POST', input)).status,
+        409,
+      );
+      delete input.fulfillment.address.postalCode;
+      assert.equal(
+        (await guest.send('/api/orders/quote', 'POST', input)).status,
+        400,
+      );
+      assert.equal((await admin.send('/api/admin/orders')).data.length, 0);
+    },
+    { deliveryService: { configured: false } },
+  ));
+
+test('alterar loja durante cálculo de rota não bloqueia SQLite nem registra preço antigo', async () => {
+  let started, release;
+  const waiting = new Promise((resolve) => {
+    release = resolve;
+  });
+  const calculating = new Promise((resolve) => {
+    started = resolve;
+  });
+  await harness(
+    async ({ admin, client, orderInput }) => {
+      let config = (await admin.send('/api/admin/settings')).data;
+      config = (
+        await admin.send('/api/admin/settings', 'PUT', {
+          ...config,
+          address: 'Origem fixture, 88',
+          deliveryEnabled: true,
+          deliveryPricing: 'distance',
+        })
+      ).data;
+      const input = orderInput();
+      input.fulfillment = {
+        method: 'delivery',
+        address: {
+          street: 'Rua fixture',
+          number: '10',
+          neighborhood: 'Bairro',
+          city: 'São Paulo',
+          postalCode: '01001-000',
+        },
+      };
+      const attempt = client().send('/api/orders', 'POST', {
+        ...input,
+        expectedTotalCents: 6700,
+      });
+      try {
+        await calculating;
+        assert.equal(
+          (
+            await admin.send('/api/admin/settings', 'PUT', {
+              ...config,
+              manualOpen: false,
+            })
+          ).status,
+          200,
+        );
+      } finally {
+        release();
+      }
+      assert.equal((await attempt).status, 409);
+      assert.equal((await admin.send('/api/admin/orders')).data.length, 0);
+    },
+    {
+      deliveryService: {
+        configured: true,
+        distance: async () => {
+          started();
+          await waiting;
+          return 3500;
+        },
+      },
+    },
+  );
+});
 test('confirmação de e-mail e recuperação com token único revogam sessões', () =>
   harness(
     async ({ app, client, sent }) => {
