@@ -1,5 +1,6 @@
 import { el } from './components/dom.js';
 import { formatPrice } from './cart.js';
+import { animateElement, revealElements } from './motion.js';
 
 function visual(product) {
   const media = el('div', undefined, 'menu-visual');
@@ -74,21 +75,33 @@ function productCard(product, category, onSelect, onAdd, spotlight = false) {
   bottom.append(price);
   const add = el(
     'button',
-    product.available ? 'Adicionar' : 'Indisponível',
+    product.available
+      ? product.optionGroups?.length
+        ? 'Montar pedido'
+        : 'Adicionar'
+      : 'Indisponível',
     'button menu-add',
   );
   add.type = 'button';
   add.disabled = !product.available;
   add.setAttribute(
     'aria-label',
-    `${product.available ? 'Adicionar' : 'Indisponível:'} ${product.name}${product.available ? ' ao carrinho' : ''}`,
+    product.available && product.optionGroups?.length
+      ? `Escolher opções de ${product.name}`
+      : `${product.available ? 'Adicionar' : 'Indisponível:'} ${product.name}${product.available ? ' ao carrinho' : ''}`,
   );
   const plus = el('span', '+');
   plus.setAttribute('aria-hidden', 'true');
   if (product.available) add.append(plus);
   add.addEventListener('click', () => {
     if (!onAdd) return onSelect(product);
-    onAdd(product);
+    const added = onAdd(product);
+    if (added) {
+      animateElement(add, [
+        { backgroundColor: '#ffe1c4', transform: 'scale(.96)' },
+        { backgroundColor: '#ff6a00', transform: 'scale(1)' },
+      ]);
+    }
   });
   bottom.append(add);
   content.append(label, heading, description, details, bottom);
@@ -113,6 +126,7 @@ export function renderMenu(products, categories, onSelect, onAdd) {
   $('#menu-order-note').hidden = !products.length;
   controls.replaceChildren();
   const buttons = [];
+  let stopReveals = () => {};
   const nameOf = (id) => categories.find((c) => c.id === id)?.name || '';
   const normalize = (value) =>
     value
@@ -120,6 +134,7 @@ export function renderMenu(products, categories, onSelect, onAdd) {
       .replace(/[\u0300-\u036f]/g, '')
       .toLocaleLowerCase('pt-BR');
   function render() {
+    stopReveals();
     const query = normalize(search.value.trim());
     const filtered = [...products]
       .sort((a, b) => Number(b.featured) - Number(a.featured))
@@ -157,6 +172,7 @@ export function renderMenu(products, categories, onSelect, onAdd) {
     buttons.forEach(({ button, id }) =>
       button.setAttribute('aria-pressed', String(category === id)),
     );
+    stopReveals = revealElements([...spotlight.children, ...grid.children]);
   }
   if (products.length)
     for (const c of [{ id: 'all', name: 'Tudo na mesa' }, ...categories]) {
