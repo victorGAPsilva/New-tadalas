@@ -205,12 +205,20 @@ export function initCheckout({ getItems, getConfig, toast }) {
       for (const [id, name, enabled] of [
         ['pickup', 'Retirada na loja', config.pickupEnabled],
         ['delivery', 'Entrega', config.deliveryEnabled],
-      ])
-        if (enabled) {
-          const o = el('option', name);
-          o.value = id;
-          modes.append(o);
-        }
+      ]) {
+        const o = el('option', enabled ? name : `${name} (indisponível)`);
+        o.value = id;
+        o.disabled = !enabled;
+        modes.append(o);
+      }
+      modes.value = config.pickupEnabled ? 'pickup' : 'delivery';
+      $('#fulfillment-note').textContent = !config.deliveryEnabled
+        ? 'No momento, atendemos somente com retirada na loja.'
+        : !config.pickupEnabled
+          ? 'No momento, atendemos somente com entrega.'
+          : '';
+      $('#fulfillment-note').hidden =
+        config.pickupEnabled && config.deliveryEnabled;
       $('#pickup-address').textContent =
         config.address ||
         'O endereço de retirada será confirmado pelo atendimento.';
