@@ -123,7 +123,7 @@ As rotas administrativas exigem sessão; login/status são públicos. Detalhes d
 
 A página inicial mantém o carrossel automático de hambúrgueres/combos, ligado aos produtos disponíveis, com pausa, setas e indicadores. A troca ocorre a cada quatro segundos, respeita movimento reduzido, foco de teclado e visibilidade. As imagens ilustrativas de fallback são identificadas; detalhes em `docs/carousel-assets.md`. A logo oficial permanece nos elementos de marca.
 
-O cardápio tem busca sem acentos, filtros, categorias e destaque. Os produtos de teste já cadastrados foram preservados; revise-os antes de atendimento real.
+O cardápio tem busca sem acentos, filtros, categorias e destaque. O lançamento será com catálogo vazio: os seis produtos de teste locais foram guardados em backup e retirados do catálogo. Consulte o [roteiro de lançamento](docs/lancamento.md) para hospedagem, SMTP e testes de aceite.
 
 A página de pedidos também tem cards com profundidade e foco visível, entrada discreta dos produtos na rolagem, confirmação visual ao adicionar e carrinho com miniaturas e total destacado. Os diálogos abrem e fecham com transições curtas. Efeitos respeitam movimento reduzido, inclusive quando essa preferência muda durante o uso; conteúdo e ações permanecem disponíveis sem suporte às animações. O acabamento fica em `public/css/order-polish.css` e os efeitos em `public/js/motion.js`.
 

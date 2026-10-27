@@ -82,3 +82,15 @@ Adicionado bloco destacado no topo do administrador com estado atual, modo de co
 GET/PATCH autenticados em `/api/admin/settings/operation` usam as mesmas validações, CSRF, bloqueio demonstrativo e versões da configuração existente. Atualização parcial aceita apenas modo, abertura manual e intervalos; não sobrescreve marca, contato, taxas ou formas de pagamento. Fechamento bloqueia novas cotações/pedidos na API e não remove pedidos recebidos. As configurações reais da loja não foram alteradas durante a implementação.
 
 Validação: 27 testes aprovados, lint e formatação aprovados. O novo caso HTTP cobre autenticação, CSRF, fechamento imediato, reabertura, ativação da agenda, fechamento no instante exato, agenda inválida, preservação dos intervalos, isolamento de outros campos e rejeição de versão antiga. Inspeção visual em navegador permanece pendente pela restrição de acesso registrada nas etapas anteriores; não houve tentativa de contorno ou envio real de pedidos.
+
+## Atualização — pré-lançamento sem produtos e ViaCEP (27/10/2026)
+
+Removidos seis produtos identificados como testes da base local, após snapshot consistente privado em `var/backups/antes-lancamento-sem-produtos-*.sqlite`. Catálogo agora vazio; administrador preservado, sem exclusão de clientes ou pedidos. O catálogo inicial versionado já era vazio. Os JSON legados e snapshots não foram enviados ao Git.
+
+ViaCEP integrado ao checkout e cadastro/edição de endereços: preenchimento de rua, bairro e cidade pelo CEP, preservação de edição manual, cancelamento de respostas antigas, estados de busca/erro e preenchimento manual quando necessário. Número e complemento não são preenchidos pelo serviço. Bairro pode selecionar uma região cadastrada com nome correspondente; a região não sobrescreve mais o bairro. A API não define a área atendida nem as taxas.
+
+Endpoint GET `/api/address/:postalCode` fixa a origem HTTPS do ViaCEP, valida formato e resposta, usa timeout de cinco segundos, cache limitado e limite por IP e por consultas simultâneas. Testes usam respostas simuladas. Uma consulta real ao CEP público de exemplo `01001-000` retornou rua, bairro e cidade com sucesso; nenhuma informação pessoal foi enviada ao provedor.
+
+Preparados `DATA_DIRECTORY` e `UPLOAD_DIRECTORY` para armazenar banco, backups e imagens em volume persistente na futura hospedagem. Teste em processos separados confirmou retenção dos dados e do arquivo de upload e geração de backup íntegro no volume configurado. Nenhuma hospedagem foi criada, nenhum domínio foi comprado e SMTP continua desabilitado.
+
+Verificação: 32 testes aprovados, lint e formatação aprovados. Novos casos cobrem CEP inválido/inexistente/genérico, falha de rede, resposta incompatível, cache/expiração, compartilhamento de consultas, limite HTTP, edição manual, respostas antigas e persistência entre processos. O roteiro em `docs/lancamento.md` separa o que foi automatizado das conferências ainda pendentes no navegador e na hospedagem real. Acesso ao navegador permanece restrito; nenhum contorno, e-mail real ou pedido comercial enviado.
