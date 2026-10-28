@@ -79,6 +79,12 @@ export function customerRouter({ customers, auth, store, orders, mail }) {
     }
     attempt.count++;
     attempts.set(req.ip, attempt);
+    const adminUsername = store.get('admin', 'owner')?.username?.toLowerCase();
+    if (
+      typeof req.body?.email === 'string' &&
+      req.body.email.trim().toLowerCase() === adminUsername
+    )
+      throw fail('Este e-mail não está disponível para cadastro.', 409);
     const customer = await customers.register(req.body);
     if (mail.status().configured) mail.request(customer.email, 'verify');
     res.status(201).json({ data: { created: true } });

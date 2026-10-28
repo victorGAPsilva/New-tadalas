@@ -17,7 +17,7 @@ function lock() {
   products = [];
   categories = [];
   document.querySelectorAll('dialog[open]').forEach((dialog) => dialog.close());
-  window.location.replace('/admin/login/?expired=1');
+  window.location.replace('/login/?expired=1');
 }
 async function api(
   path,
@@ -204,7 +204,7 @@ function openEditor(product) {
 $('#logout').addEventListener('click', async () => {
   try {
     await api('/logout', { method: 'POST' });
-    window.location.replace('/admin/login/');
+    window.location.replace('/login/');
   } catch (error) {
     notice(error.message);
   }
@@ -303,7 +303,7 @@ async function init() {
     initStoreControls({ api, notice });
     await refresh();
   } catch {
-    window.location.replace('/admin/login/');
+    window.location.replace('/login/');
   }
 }
 initOperations({ api, notice, onCategoriesChanged: refresh });

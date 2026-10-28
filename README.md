@@ -23,6 +23,8 @@ npm run format:check
 
 ## Administração
 
+A entrada principal de clientes e administrador é `/login/`, com o campo **E-mail ou usuário**. O backend reconhece o usuário administrativo e valida a senha antes de criar a sessão administrativa e direcionar a `/admin/`; clientes entram em `/conta/`. O cadastro continua exclusivo para clientes. Não há link público para administrar a loja no login, conta ou cardápio. A rota antiga `/admin/login/` continua disponível por compatibilidade, com as mesmas proteções. Logout e expiração do painel levam ao login comum. O identificador administrativo é reservado: novos clientes e novos administradores não podem usar identificadores que colidam entre os dois tipos de conta.
+
 O acesso administrativo existente é preservado. Não há senha padrão nem cadastro público de administradores. Para criar o primeiro acesso ou redefini-lo localmente:
 
 ```sh

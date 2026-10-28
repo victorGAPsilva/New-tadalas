@@ -10,7 +10,7 @@
     <link rel="stylesheet" href="/css/tokens.css" />
     <link rel="stylesheet" href="/css/global.css" />
     <link rel="stylesheet" href="/css/account.css" />
-    <script type="module" src="/js/login.js?v=6.0.0"></script>
+    <script type="module" src="/js/login.js?v=7.0.0"></script>
     <link rel="stylesheet" href="/css/commerce.css" />
   </head>
   <body>
@@ -52,7 +52,7 @@
               <div
                 class="account-tabs"
                 role="group"
-                aria-label="Acesso de clientes"
+                aria-label="Acesso à conta"
               >
                 <button id="show-login" type="button" aria-pressed="true">
                   Entrar</button
@@ -69,10 +69,11 @@
                     maxlength="80"
                   />
                 </div>
-                <label for="customer-email">E-mail</label
+                <label id="identifier-label" for="customer-email"
+                  >E-mail ou usuário</label
                 ><input
                   id="customer-email"
-                  type="email"
+                  type="text"
                   autocomplete="username"
                   maxlength="100"
                   required
@@ -105,8 +106,6 @@
             </div>
             <a class="account-admin-link" href="/recuperar/"
               >Esqueci minha senha ↗</a
-            ><a class="account-admin-link" href="/admin/login/"
-              >Administrar a hamburgueria ↗</a
             >
           </div>
         </section>

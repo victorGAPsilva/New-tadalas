@@ -20,6 +20,7 @@ import { commerceRouter } from './routes/commerce.js';
 import { createPostalService } from './services/postal.js';
 import { postalRouter } from './routes/postal.js';
 import { createDeliveryService } from './services/delivery.js';
+import { signInRouter } from './routes/sign-in.js';
 export function createApp(options = {}) {
   const app = express();
   app.disable('x-powered-by');
@@ -90,6 +91,10 @@ export function createApp(options = {}) {
   const orders = orderService(store, settings, { ...options, delivery });
   const mail = accountMailService(store, customers, options);
   app.locals.services = { store, settings, catalog, customers, orders, mail };
+  app.use(
+    '/api/auth',
+    signInRouter({ store, adminAuth: auth, customerAuth, mail }),
+  );
   app.use(
     '/api/customer',
     customerRouter({ customers, auth: customerAuth, store, orders, mail }),

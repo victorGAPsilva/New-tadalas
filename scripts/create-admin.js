@@ -40,6 +40,16 @@ try {
   if (password !== confirmation) throw new Error('As senhas não coincidem.');
   const store = openStore(directory);
   try {
+    if (
+      store
+        .list('customers')
+        .some(
+          (customer) => customer.email.toLowerCase() === username.toLowerCase(),
+        )
+    )
+      throw new Error(
+        'Esse usuário já é utilizado por uma conta de cliente. Escolha outro identificador.',
+      );
     const existing = store.get('admin', 'owner');
     if (existing && !process.argv.includes('--reset'))
       throw Object.assign(

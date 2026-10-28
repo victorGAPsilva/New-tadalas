@@ -143,6 +143,8 @@ test('páginas separadas de cardápio, login, conta e administração', async ()
       const response = await fetch(base + path);
       assert.equal(response.status, 200, path);
       const html = await response.text();
+      if (!path.startsWith('/admin/'))
+        assert.doesNotMatch(html, /href="\/admin(?:\/|\?|")/);
       for (const match of html.matchAll(/(?:href|src)="(\/[^"]+)"/g))
         assert.equal((await fetch(base + match[1])).status, 200, match[1]);
       for (const match of html.matchAll(/href="#([^"]+)"/g))

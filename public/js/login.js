@@ -3,8 +3,13 @@ const $ = (selector) => document.querySelector(selector);
 let registering = false,
   csrfToken;
 const onProfilePage = location.pathname.startsWith('/conta');
-async function api(path, body, method = body ? 'POST' : 'GET') {
-  const response = await fetch(`/api/customer${path}`, {
+async function api(
+  path,
+  body,
+  method = body ? 'POST' : 'GET',
+  scope = 'customer',
+) {
+  const response = await fetch(`/api/${scope}${path}`, {
     credentials: 'same-origin',
     ...(body
       ? {
@@ -34,6 +39,8 @@ function setMode(create) {
   $('#confirm-field').hidden = !create;
   $('#password-hint').hidden = !create;
   $('#customer-name').required = create;
+  $('#customer-email').type = create ? 'email' : 'text';
+  $('#identifier-label').textContent = create ? 'E-mail' : 'E-mail ou usuário';
   $('#customer-confirm').required = create;
   $('#customer-password').minLength = create ? 12 : 1;
   $('#customer-password').autocomplete = create
@@ -46,6 +53,7 @@ function setMode(create) {
     : 'Entrar ↗';
 }
 function activate(session) {
+  if (session.role === 'admin') return window.location.replace('/admin/');
   if (!onProfilePage) return window.location.replace('/conta/');
   csrfToken = session.csrfToken;
   $('#auth-view').hidden = true;
@@ -83,7 +91,12 @@ $('#customer-form').addEventListener('submit', async (event) => {
       });
       created = true;
     }
-    const session = await api('/login', { email, password });
+    const session = await api(
+      '/login',
+      { identifier: email, password },
+      'POST',
+      'auth',
+    );
     $('#customer-password').value = '';
     $('#customer-confirm').value = '';
     activate(session);
@@ -111,9 +124,11 @@ $('#customer-logout').addEventListener('click', async () => {
   }
 });
 if (onProfilePage) $('#auth-view').hidden = true;
+if (new URLSearchParams(location.search).get('expired') === '1')
+  $('#account-error').textContent = 'Sua sessão expirou. Entre novamente.';
 async function init() {
   try {
-    const session = await api('/session');
+    const session = await api('/session', undefined, 'GET', 'auth');
     if (session) activate(session);
     else if (onProfilePage) window.location.replace('/login/');
   } catch {
