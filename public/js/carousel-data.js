@@ -1,6 +1,6 @@
 const samples = {
-  hamburgueres: '/assets/images/carousel-burguer-illustrative.jpg',
-  combos: '/assets/images/carousel-combo-illustrative.jpg',
+  hamburgueres: '/assets/images/burger-cutout-illustrative.webp',
+  combos: '/assets/images/hero-meal-illustrative.webp',
 };
 export function carouselSlides(products = []) {
   const selected = products

@@ -12,7 +12,7 @@ import {
   formatPrice,
   restoreCart,
 } from './cart.js';
-import { renderMenu } from './menu.js?v=3.0.0';
+import { renderMenu } from './menu.js?v=3.1.0';
 import { el, productImage } from './components/dom.js';
 const $ = (selector) => document.querySelector(selector);
 let products = [],
@@ -373,16 +373,20 @@ async function load() {
     } catch {
       items = [];
     }
-    renderMenu(products, categories, selectProduct, quickAdd);
-    renderCart();
-    const requestedProduct = new URLSearchParams(location.search).get(
-      'produto',
+    const selection = new URLSearchParams(location.search);
+    renderMenu(
+      products,
+      categories,
+      selectProduct,
+      quickAdd,
+      selection.get('categoria'),
     );
+    renderCart();
+    const requestedProduct = selection.get('produto');
     const product =
       requestedProduct && products.find((item) => item.id === requestedProduct);
     if (product) selectProduct(product);
-    if (new URLSearchParams(location.search).get('carrinho') === '1')
-      openCart();
+    if (selection.get('carrinho') === '1') openCart();
     try {
       const warning = sessionStorage.getItem('tadalas-reorder-warning');
       if (warning) {

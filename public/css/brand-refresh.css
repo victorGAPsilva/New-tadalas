@@ -1,0 +1,187 @@
+/* Public storefront palette. Administration keeps its independent theme. */
+.storefront {
+  --color-background: #fffaf3;
+  --color-surface: #fff;
+  --color-surface-raised: #f3ede4;
+  --color-primary: #ff6a00;
+  --color-primary-hover: #e65f00;
+  --color-text: #142c35;
+  --color-text-muted: #657079;
+  --color-border: #e6ded3;
+  --color-accent-ink: #b84408;
+  --radius-sm: 8px;
+  --radius-md: 14px;
+  --radius-lg: 20px;
+  --container-width: 1200px;
+  color-scheme: light;
+  -webkit-font-smoothing: antialiased;
+}
+.storefront h2,
+.storefront h3 {
+  font-family: var(--font-body);
+  font-weight: 800;
+  letter-spacing: -0.045em;
+  line-height: 1.12;
+}
+.storefront em {
+  color: #b84408;
+}
+.storefront .button {
+  border-radius: 999px;
+  text-transform: none;
+  letter-spacing: 0;
+  font-size: 0.85rem;
+  font-weight: 800;
+  padding: 14px 24px;
+  color: #142c35;
+  transition:
+    background 180ms,
+    transform 180ms,
+    box-shadow 180ms;
+}
+.storefront .button:hover {
+  box-shadow: 0 5px 18px #142c3514;
+}
+.storefront .eyebrow {
+  color: var(--color-accent-ink);
+  font-size: 0.66rem;
+  letter-spacing: 0.1em;
+  font-weight: 800;
+}
+.storefront .text-link {
+  font-size: 0.8rem;
+  color: var(--color-accent-ink);
+  gap: 14px;
+}
+.storefront .text-link:hover {
+  color: #853006;
+}
+.storefront .header {
+  background: #fffdf9f5;
+  border-bottom-color: #e6ded3;
+  backdrop-filter: blur(14px);
+}
+.storefront .header-inner {
+  min-height: 88px;
+  gap: 26px;
+}
+.storefront .header .brand img {
+  width: 74px;
+  height: 74px;
+}
+.storefront .header nav > a {
+  font-weight: 700;
+  font-size: 0.8rem;
+  position: relative;
+}
+.storefront .header nav > a:not(.button):hover,
+.storefront .header nav > a[aria-current='page'] {
+  color: var(--color-accent-ink);
+}
+.storefront .header nav > a[aria-current='page']::after {
+  content: '';
+  position: absolute;
+  height: 2px;
+  background: var(--color-primary);
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+.storefront .cart-toggle,
+.storefront .menu-toggle {
+  border-radius: 999px;
+  font-weight: 700;
+  min-height: 44px;
+}
+.storefront .cart-toggle {
+  background: var(--color-primary);
+  border-color: transparent;
+  color: #142c35;
+  padding-inline: 20px;
+}
+.storefront .cart-toggle:hover {
+  background: var(--color-primary-hover);
+}
+.storefront .cart-toggle span {
+  background: #142c35;
+  color: #fffaf3;
+  text-align: center;
+}
+.storefront .footer {
+  background: #142c35;
+  color: #fffaf3;
+  --color-border: #ffffff26;
+  --color-text-muted: #bdc9cc;
+  border-top: none;
+}
+.storefront .footer nav a:hover {
+  color: #ff9b56;
+}
+.storefront .footer-bottom {
+  color: #bdc9cc;
+}
+.storefront .toast {
+  background: #142c35;
+  color: #fffaf3;
+  box-shadow: 0 6px 24px #142c3533;
+}
+.storefront input,
+.storefront textarea,
+.storefront select {
+  border-color: #c6bfb4;
+}
+.storefront input::placeholder,
+.storefront textarea::placeholder {
+  color: #72777a;
+  opacity: 1;
+}
+.storefront :is(a, button, input, textarea, select):focus-visible {
+  outline: 3px solid #bd4709;
+  outline-offset: 4px;
+}
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+@media (min-width: 960px) {
+  .storefront .header nav {
+    gap: 24px;
+  }
+}
+@media (max-width: 959px) {
+  .storefront .header-inner {
+    gap: 12px;
+    min-height: 78px;
+  }
+  .storefront .header .brand img {
+    width: 64px;
+    height: 64px;
+  }
+  .storefront .header nav.open {
+    background: #fffdf9;
+    box-shadow: 0 16px 24px #142c3514;
+  }
+}
+@media (max-width: 420px) {
+  .storefront .cart-toggle {
+    padding-inline: 14px;
+  }
+  .storefront .header-inner {
+    gap: 8px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .storefront *,
+  .storefront *::before,
+  .storefront *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+}

@@ -31,7 +31,7 @@ test('carrossel seleciona hambúrgueres e combos disponíveis e prioriza destaqu
   assert.equal(slides.length, 2);
   assert.equal(slides[0].title, 'Burguér & especial');
   assert.equal(slides[0].illustrative, true);
-  assert.match(slides[0].image, /burguer-illustrative\.jpg$/);
+  assert.match(slides[0].image, /burger-cutout-illustrative\.webp$/);
   assert.equal(slides[1].image, '/assets/images/combo.jpg');
   assert.equal(slides[1].illustrative, false);
   assert.equal(

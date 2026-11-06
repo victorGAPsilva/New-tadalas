@@ -1,4 +1,4 @@
-import { carouselSlides } from './carousel-data.js';
+import { carouselSlides } from './carousel-data.js?v=5.0.0';
 export function initHeroCarousel() {
   const root = document.querySelector('#hero-art');
   if (!root) return () => {};
@@ -24,6 +24,7 @@ export function initHeroCarousel() {
   function show(position, manual = false) {
     index = (position + slides.length) % slides.length;
     const slide = slides[index];
+    root.setAttribute('data-product-photo', String(!slide.illustrative));
     image.src = slide.image;
     image.alt = `${slide.title}${slide.illustrative ? ' — imagem ilustrativa' : ''}`;
     $('#carousel-title').textContent = slide.title;
@@ -112,6 +113,7 @@ export function initHeroCarousel() {
       image.src = slide.fallbackImage;
       image.alt = `${slide.title} — imagem ilustrativa`;
       $('#carousel-illustrative').hidden = false;
+      root.setAttribute('data-product-photo', 'false');
     }
   });
   document.addEventListener('visibilitychange', schedule);

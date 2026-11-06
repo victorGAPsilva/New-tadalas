@@ -1,0 +1,745 @@
+/* The public ordering and account flows share the refreshed Tadalas palette. */
+.storefront.order-page {
+  background: var(--color-background);
+}
+
+.storefront.order-page .menu-section {
+  padding-top: 48px;
+  padding-bottom: 56px;
+}
+
+.storefront .menu-intro {
+  padding-bottom: 26px;
+  align-items: center;
+}
+
+.storefront.order-page .menu-intro h1 {
+  margin-top: 12px;
+  font-size: clamp(3rem, 5.5vw, 5.2rem);
+  line-height: 1.02;
+}
+
+.storefront .menu-intro-copy {
+  max-width: 310px;
+}
+
+.storefront .menu-intro-copy > p {
+  font-size: 1rem;
+  margin-top: 12px;
+}
+
+.storefront .menu-edition,
+.storefront .menu-section .menu-card-kicker,
+.storefront .menu-no-results > span,
+.storefront .cart-dialog .eyebrow {
+  color: #a14000;
+}
+
+.storefront .store-status {
+  color: #235d45;
+  background: #eaf3e9;
+  border-color: #cfdfd0;
+  margin: 0 0 24px;
+}
+
+.storefront .store-status.store-closed {
+  color: #8c460b;
+  background: #fff0d9;
+  border-color: #eed5ae;
+}
+
+.storefront .menu-steps {
+  background: #f4eee5;
+  border: 1px solid var(--color-border);
+  border-radius: 14px;
+  padding: 18px 24px;
+  font-size: 0.8rem;
+}
+
+.storefront .menu-steps b {
+  background: #fffaf3;
+  border-color: #e9c5a8;
+  color: #a14000;
+  font-weight: 700;
+}
+
+.storefront .menu-selection {
+  padding-top: 32px;
+}
+
+.storefront .menu-section .categories {
+  margin-bottom: 24px;
+}
+
+.storefront .menu-section .category-button {
+  border-color: var(--color-border);
+  background: #fff;
+  color: var(--color-text);
+  font-weight: 600;
+}
+
+.storefront .menu-section .category-button:hover {
+  border-color: #c8a383;
+}
+
+.storefront .menu-section .category-button[aria-pressed='true'] {
+  background: var(--color-text);
+  border-color: var(--color-text);
+  color: #fffaf3;
+  box-shadow: none;
+}
+
+.storefront .category-count {
+  opacity: 0.8;
+}
+
+.storefront .menu-search > label {
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.storefront .search-field {
+  background: #fff;
+  border-color: #cfc6ba;
+  border-radius: 12px;
+  min-height: 52px;
+}
+
+.storefront .search-field > span {
+  color: #a14000;
+}
+
+.storefront .search-field input {
+  font-size: 1rem;
+}
+
+.storefront .menu-availability {
+  font-size: 0.82rem;
+}
+
+.storefront .menu-section .product-card {
+  background: #fff;
+  border: 1px solid var(--color-border);
+  border-radius: 14px;
+  box-shadow: 0 5px 18px #142c3505;
+}
+
+.storefront .menu-section .products {
+  gap: 22px;
+}
+
+.storefront .menu-section .product-card h3,
+.storefront .menu-results-heading h3,
+.storefront .menu-feature h3,
+.storefront .product-dialog h2,
+.storefront .cart-dialog h2,
+.storefront .cart-empty h3 {
+  font-family: var(--font-body);
+  font-weight: 800;
+  letter-spacing: -0.035em;
+  line-height: 1.15;
+}
+
+.storefront .menu-section .product-card h3 {
+  font-size: 1.4rem;
+}
+
+.storefront .menu-section .menu-card-description {
+  font-size: 0.88rem;
+}
+
+.storefront .menu-card-content {
+  padding: 24px;
+}
+
+.storefront .menu-visual,
+.storefront .menu-visual-placeholder,
+.storefront .menu-feature .menu-visual-placeholder {
+  background: #f5efe6;
+}
+
+.storefront .menu-photo-note,
+.storefront .menu-feature .menu-photo-note {
+  color: #655d54;
+  font-size: 0.55rem;
+}
+
+.storefront .menu-section .menu-card-price,
+.storefront .cart-line-total,
+.storefront .order-grand-total > strong {
+  color: var(--color-text);
+  font-family: var(--font-body);
+  font-size: 1.4rem;
+  font-weight: 800;
+  letter-spacing: -0.035em;
+}
+
+.storefront .menu-section .menu-add {
+  border-radius: 999px;
+  font-size: 0.72rem;
+  padding-inline: 17px;
+  gap: 12px;
+}
+
+.storefront .menu-details-button {
+  color: #835029;
+  font-size: 0.73rem;
+  margin-bottom: 4px;
+}
+
+.storefront .menu-add:disabled {
+  background: #ebe6de;
+  color: #655d54;
+}
+
+.storefront .menu-card-badge {
+  border-radius: 999px;
+  box-shadow: none;
+  font-size: 0.6rem;
+}
+
+.storefront .unavailable-badge {
+  color: #fff;
+  background: var(--color-text);
+}
+
+.storefront .menu-feature {
+  color: var(--color-text);
+  background: #f7ebda;
+  border: 1px solid #ecd7bc;
+  box-shadow: none;
+  border-radius: 16px;
+}
+
+.storefront .menu-feature h3 {
+  font-size: clamp(1.8rem, 3.1vw, 3rem);
+}
+
+.storefront .menu-section .menu-feature .menu-card-description {
+  color: #605b51;
+}
+
+.storefront .menu-section .menu-feature .menu-card-price {
+  color: var(--color-text);
+  font-size: 1.65rem;
+}
+
+.storefront .menu-section .menu-empty {
+  background: #f6ecde;
+  border-color: #ecdbc5;
+  border-radius: 16px;
+  padding: 48px;
+}
+
+.storefront .menu-empty h3 {
+  font-size: clamp(2.4rem, 4vw, 4rem);
+}
+
+.storefront .menu-empty .empty-index {
+  color: #a14000;
+}
+
+.storefront .menu-empty-logo {
+  transform: rotate(-4deg);
+}
+
+.storefront .menu-no-results {
+  border-color: #cfc6ba;
+  background: #fff;
+}
+
+.storefront .menu-no-results button {
+  color: #a14000;
+}
+
+.storefront .order-footer {
+  align-items: center;
+  font-size: 0.75rem;
+}
+
+.storefront.order-page dialog {
+  background: #fffaf3;
+  border-color: #e6ded3;
+  color: var(--color-text);
+  box-shadow: 0 24px 100px #142c3540;
+}
+
+.storefront.order-page dialog::backdrop {
+  background: #0b202ab3;
+}
+
+.storefront.order-page .cart-dialog {
+  border-left-color: #e6ded3;
+}
+
+.storefront.order-page .cart-dialog .dialog-top {
+  background: #fffaf3;
+  padding-top: 20px;
+  padding-bottom: 24px;
+}
+
+.storefront .cart-dialog .dialog-top h2 {
+  font-size: clamp(1.65rem, 6vw, 2.2rem);
+}
+
+.storefront .icon-button {
+  background: #fff;
+  border-color: #d8cec0;
+}
+
+.storefront.order-page .product-dialog .option-group {
+  background: #fff;
+  border-color: #e6ded3;
+}
+
+.storefront.order-page .product-dialog .option-row:has(input:checked) {
+  color: #91400b;
+  font-weight: 600;
+}
+
+.storefront .product-dialog h2 {
+  font-size: 1.9rem;
+}
+
+.storefront .product-dialog form {
+  border-top: 1px solid var(--color-border);
+  padding-top: 24px;
+}
+
+.storefront .cart-item-photo {
+  background: #f2e9dc;
+  border-color: #e6ded3;
+}
+
+.storefront.order-page .cart-item .quantity-step {
+  background: #fff;
+  border-color: #d8cec0;
+}
+
+.storefront.order-page .cart-item .quantity-step:hover:not(:disabled) {
+  background: #f6e4cd;
+  border-color: #d7b791;
+}
+
+.storefront.order-page .cart-item .item-controls > button:last-child {
+  color: #7b5040;
+}
+
+.storefront .cart-line-total {
+  font-size: 1.1rem;
+}
+
+.storefront input:not([type='checkbox']):not([type='radio']),
+.storefront select,
+.storefront textarea {
+  background: #fff;
+  border-color: #cfc6ba;
+  color: var(--color-text);
+  border-radius: 9px;
+  font-size: 1rem;
+  line-height: 1.5;
+}
+
+.storefront input::placeholder,
+.storefront textarea::placeholder {
+  color: #7a7972;
+  opacity: 1;
+}
+
+.storefront .search-field input {
+  background: transparent;
+}
+
+.storefront .postal-search button,
+.storefront .logout-button {
+  background: #fff;
+  color: var(--color-text);
+  border-color: #cfc6ba;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.storefront .postal-search button:hover:not(:disabled),
+.storefront .logout-button:hover:not(:disabled) {
+  background: #f7ead9;
+  border-color: #c8a383;
+}
+
+.storefront .maps-attribution {
+  color: #142c35;
+}
+
+.storefront .account-error,
+.storefront #checkout-error {
+  color: #aa321e;
+}
+
+.storefront .option-error {
+  color: #aa321e !important;
+}
+
+.storefront .checkout-details label,
+.storefront #cart-summary > label {
+  font-weight: 600;
+}
+
+.storefront.order-page .order-grand-total {
+  background: #f7ead9;
+  border-color: #ead3b7;
+  border-radius: 12px;
+}
+
+.storefront .order-grand-total > strong {
+  font-size: 1.8rem;
+}
+
+.storefront.order-page #checkout {
+  border-radius: 999px;
+  font-size: 0.75rem;
+}
+
+.storefront.order-page .cart-bar {
+  color: #142c35;
+  border-color: #f48532;
+  border-radius: 999px;
+  box-shadow: 0 10px 32px #142c3526;
+  padding-inline: 24px;
+}
+
+.storefront.order-page .toast {
+  background: #142c35;
+  border-color: #334c55;
+  color: #fffaf3;
+  box-shadow: 0 8px 32px #142c3526;
+}
+
+.storefront .account-page {
+  max-width: 1200px;
+  padding: 0 32px 32px;
+}
+
+.storefront .account-header {
+  min-height: 100px;
+  padding-block: 12px;
+}
+
+.storefront .account-header img {
+  width: 76px;
+  height: 76px;
+}
+
+.storefront .account-header nav {
+  align-items: center;
+  gap: 28px;
+  font-weight: 700;
+}
+
+.storefront .account-header nav a {
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+}
+
+.storefront .account-header nav a:hover {
+  color: #a14000;
+}
+
+.storefront .account-layout {
+  grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr);
+  gap: 56px;
+  align-items: start;
+  padding-block: 56px;
+}
+
+.storefront .account-intro {
+  position: relative;
+  padding: 44px;
+  background: #142c35;
+  color: #fffaf3;
+  border-radius: 20px;
+  border-bottom: 7px solid #ff6a00;
+}
+
+.storefront .account-intro .eyebrow {
+  color: #ffc18e;
+}
+
+.storefront .account-intro h1 {
+  font-size: clamp(3.2rem, 4.9vw, 4.7rem);
+}
+
+.storefront .account-intro > p:not(.eyebrow) {
+  color: #d6e0df;
+  font-size: 0.95rem;
+}
+
+.storefront .account-intro .text-link {
+  color: #fffaf3;
+  font-size: 0.8rem;
+}
+
+.storefront .account-intro .text-link:hover {
+  color: #ffc18e;
+}
+
+.storefront .account-form-card,
+.storefront .profile-card,
+.storefront .recovery-card {
+  background: #fff;
+  border-color: #e6ded3;
+  border-radius: 18px;
+  box-shadow: 0 12px 36px #142c3505;
+}
+
+.storefront .account-tabs {
+  padding: 5px;
+  gap: 4px;
+  background: #f4eee5;
+  border: 0;
+  border-radius: 999px;
+}
+
+.storefront .account-tabs button {
+  flex: 1;
+  padding: 12px;
+  border: 0;
+  border-radius: 999px;
+  font-weight: 700;
+  font-size: 0.9rem;
+}
+
+.storefront .account-tabs button[aria-pressed='true'] {
+  background: #fff;
+  color: #142c35;
+  box-shadow: 0 2px 8px #142c3510;
+}
+
+.storefront .account-form-card label {
+  font-size: 0.85rem;
+}
+
+.storefront .account-form-card input {
+  min-height: 52px;
+}
+
+.storefront .account-admin-link {
+  margin: 14px 0 0;
+  font-size: 0.8rem;
+  color: #835029;
+}
+
+.storefront .account-hint {
+  font-size: 0.78rem;
+}
+
+.storefront .profile h1 {
+  font-size: clamp(2.6rem, 4.5vw, 4rem);
+}
+
+.storefront .profile-card dt {
+  font-size: 0.8rem;
+}
+
+.storefront .account-history h2,
+.storefront .ops-card h3 {
+  font-family: var(--font-body);
+  font-weight: 800;
+  letter-spacing: -0.035em;
+}
+
+.storefront .account-history h2 {
+  font-size: 1.65rem;
+}
+
+.storefront .account-history label {
+  font-size: 0.82rem;
+  margin-bottom: 6px;
+}
+
+.storefront .recovery-card {
+  width: min(520px, calc(100% - 32px));
+  margin: 64px auto;
+  padding: 36px;
+}
+
+.storefront .recovery-brand {
+  display: block;
+  width: 84px;
+  margin-bottom: 28px;
+}
+
+.storefront .recovery-brand img {
+  width: 84px;
+  height: 84px;
+  object-fit: contain;
+}
+
+.storefront .recovery-card h1 {
+  font-size: clamp(2.3rem, 7vw, 3rem);
+  line-height: 1.1;
+  margin-bottom: 28px;
+}
+
+.storefront .recovery-card label {
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.storefront .recovery-card .button {
+  width: 100%;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .storefront .menu-section .product-card:hover,
+  .storefront .menu-section .product-card:focus-within {
+    border-color: #d8b58b;
+    box-shadow: 0 12px 30px #142c350d;
+  }
+}
+
+@media (max-width: 959px) {
+  .storefront .account-layout {
+    gap: 28px;
+  }
+
+  .storefront .account-intro {
+    padding: 32px;
+  }
+}
+
+@media (max-width: 767px) {
+  .storefront.order-page .menu-section {
+    padding-top: 32px;
+  }
+
+  .storefront .menu-intro {
+    align-items: flex-start;
+    gap: 18px;
+  }
+
+  .storefront.order-page .menu-intro h1 {
+    font-size: clamp(3rem, 10vw, 4.3rem);
+    margin-top: 10px;
+  }
+
+  .storefront .menu-intro-copy {
+    max-width: none;
+    gap: 4px 16px;
+  }
+
+  .storefront .menu-intro-copy > p {
+    font-size: 0.9rem;
+    margin-top: 0;
+  }
+
+  .storefront .menu-edition {
+    display: none;
+  }
+
+  .storefront .menu-steps {
+    padding: 18px;
+    gap: 14px;
+  }
+
+  .storefront .menu-section .categories {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    padding: 2px 2px 12px;
+    margin-inline: -2px;
+    scrollbar-width: thin;
+  }
+
+  .storefront .menu-section .category-button {
+    flex-shrink: 0;
+  }
+
+  .storefront .menu-section .menu-empty {
+    padding: 28px;
+    gap: 16px;
+  }
+
+  .storefront .menu-empty-logo {
+    justify-self: center;
+  }
+
+  .storefront .account-page {
+    padding-inline: 20px;
+  }
+
+  .storefront .account-header {
+    gap: 16px;
+    min-height: 88px;
+  }
+
+  .storefront .account-header img {
+    width: 64px;
+    height: 64px;
+  }
+
+  .storefront .account-header nav {
+    gap: 16px;
+    font-size: 0.74rem;
+  }
+
+  .storefront .account-layout {
+    grid-template-columns: 1fr;
+    padding-block: 28px;
+    gap: 24px;
+  }
+
+  .storefront .account-intro {
+    padding: 30px;
+    border-radius: 16px;
+  }
+
+  .storefront .account-intro h1 {
+    font-size: clamp(2.8rem, 10vw, 4rem);
+    margin-block: 18px;
+  }
+
+  .storefront .account-intro .text-link {
+    margin-top: 14px;
+  }
+
+  .storefront .account-form-card,
+  .storefront .profile-card {
+    padding: 24px;
+  }
+
+  .storefront .recovery-card {
+    margin-block: 32px;
+    padding: 28px;
+  }
+}
+
+@media (max-width: 399px) {
+  .storefront .account-page {
+    padding-inline: 16px;
+  }
+
+  .storefront .account-header nav {
+    gap: 10px;
+    font-size: 0.68rem;
+  }
+
+  .storefront .account-form-card,
+  .storefront .profile-card,
+  .storefront .account-intro {
+    padding: 22px;
+  }
+
+  .storefront .product-dialog form .button {
+    flex-basis: 100%;
+  }
+
+  .storefront.order-page #checkout {
+    font-size: 0.68rem;
+    gap: 12px;
+    padding-inline: 18px;
+  }
+
+  .storefront .order-grand-total > strong {
+    font-size: 1.6rem;
+  }
+}

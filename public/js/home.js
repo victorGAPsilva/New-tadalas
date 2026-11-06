@@ -1,8 +1,10 @@
-import { initHeroCarousel } from './hero-carousel.js?v=4.1.0';
+import { initHeroCarousel } from './hero-carousel.js?v=5.0.0';
 import './navigation.js';
 import { request } from './api.js';
+import { renderHomeProducts } from './home-products.js?v=1.0.0';
 request('/config/public')
   .then((config) => {
+    document.querySelector('#demo-banner').hidden = !config.demoMode;
     const status = document.querySelector('#home-store-status');
     if (status) {
       status.textContent = config.status?.message || '';
@@ -10,7 +12,7 @@ request('/config/public')
     }
     if (config.logoUrl && /^\/assets\/[a-zA-Z0-9/_.-]+$/.test(config.logoUrl))
       document
-        .querySelectorAll('.brand img,.teaser-mark img')
+        .querySelectorAll('.brand img,.brand-story-mark img')
         .forEach((image) => {
           image.src = config.logoUrl;
           image.alt = config.brand;
@@ -25,6 +27,11 @@ request('/config/public')
           ? '+55 11 96021-7697'
           : `+${config.whatsappNumber}`;
     const business = document.querySelector('#business-details');
+    const directions = document.querySelector('#home-directions');
+    if (config.address && directions) {
+      directions.href = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(config.address)}`;
+      directions.hidden = false;
+    }
     for (const key of ['address', 'openingHours'])
       if (config[key] && business) {
         const p = document.createElement('p');
@@ -52,6 +59,14 @@ request('/config/public')
   });
 
 const updateCarousel = initHeroCarousel();
-request('/products')
-  .then(updateCarousel)
-  .catch(() => {});
+Promise.all([request('/products'), request('/categories')])
+  .then(([products, categories]) => {
+    updateCarousel(products);
+    renderHomeProducts(products, categories);
+  })
+  .catch(() => {
+    const status = document.querySelector('#home-catalog-status');
+    status.querySelector('h3').textContent = 'Seu cardápio está logo ali.';
+    status.querySelector('p').textContent =
+      'Abra o cardápio para consultar a disponibilidade ou fale com a gente pelo WhatsApp.';
+  });

@@ -109,12 +109,20 @@ function productCard(product, category, onSelect, onAdd, spotlight = false) {
   return card;
 }
 
-export function renderMenu(products, categories, onSelect, onAdd) {
+export function renderMenu(
+  products,
+  categories,
+  onSelect,
+  onAdd,
+  initialCategory = 'all',
+) {
   const $ = (selector) => document.querySelector(selector);
   const grid = $('#products'),
     controls = $('#categories'),
     spotlight = $('#menu-spotlight');
-  let category = 'all';
+  let category = categories.some((item) => item.id === initialCategory)
+    ? initialCategory
+    : 'all';
   const search = $('#menu-search'),
     available = $('#menu-available');
   // Rebinding replaces previous callbacks after a catalog refresh.
