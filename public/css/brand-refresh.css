@@ -150,6 +150,11 @@
   white-space: nowrap;
   border: 0;
 }
+
+.storefront .skip-link {
+  background: #fffaf3;
+  color: #142c35;
+}
 @media (min-width: 960px) {
   .storefront .header nav {
     gap: 24px;

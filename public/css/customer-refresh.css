@@ -465,6 +465,10 @@
   color: #ffc18e;
 }
 
+.storefront .account-intro em {
+  color: #ffab6e;
+}
+
 .storefront .account-intro h1 {
   font-size: clamp(3.2rem, 4.9vw, 4.7rem);
 }

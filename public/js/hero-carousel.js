@@ -1,4 +1,5 @@
 import { carouselSlides } from './carousel-data.js?v=5.0.0';
+import { animateElement } from './motion.js';
 export function initHeroCarousel() {
   const root = document.querySelector('#hero-art');
   if (!root) return () => {};
@@ -26,6 +27,14 @@ export function initHeroCarousel() {
     const slide = slides[index];
     root.setAttribute('data-product-photo', String(!slide.illustrative));
     image.src = slide.image;
+    animateElement(
+      image,
+      [
+        { opacity: 0.3, transform: 'translateY(8px)' },
+        { opacity: 1, transform: 'translateY(0)' },
+      ],
+      { duration: 420 },
+    );
     image.alt = `${slide.title}${slide.illustrative ? ' — imagem ilustrativa' : ''}`;
     $('#carousel-title').textContent = slide.title;
     $('#carousel-category').textContent = slide.category;
