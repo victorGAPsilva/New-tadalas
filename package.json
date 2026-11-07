@@ -11,6 +11,7 @@
     "start": "node src/server.js",
     "admin:create": "node scripts/create-admin.js",
     "admin:reset": "node scripts/create-admin.js --reset",
+    "catalog:test-products": "node scripts/seed-test-products.js",
     "db:backup": "node scripts/backup-db.js",
     "test": "node --test",
     "lint": "eslint .",
